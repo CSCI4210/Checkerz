@@ -27,9 +27,12 @@ dependencies:
     override:
         - chmod +x gradlew
         - ANDROID_HOME=/usr/local/android-sdk-linux ./gradlew dependencies
+        - ./gradlew dependencies
 
 test:
     override:
+        - chmod +x grailsw
+        - ./grailsw test-app --non-interactive
         - (./gradlew assemble):
             timeout: 360
         # copy the build outputs to artifacts
