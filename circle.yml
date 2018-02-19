@@ -24,7 +24,7 @@ dependencies:
         - echo y | android update sdk --no-ui --all --filter extra-android-support
         - echo y | android update sdk --no-ui --all --filter extra-google-google_play_services
         - echo y | android update sdk --no-ui --all --filter extra-google-m2repository
-		override:
+    override:
         - chmod +x gradlew
         - ANDROID_HOME=/usr/local/android-sdk-linux ./gradlew dependencies
 
@@ -36,4 +36,3 @@ test:
             timeout: 360
         # copy the build outputs to artifacts
         - cp -r app/build/outputs $CIRCLE_ARTIFACTS 
-            
