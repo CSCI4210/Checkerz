@@ -15,30 +15,30 @@ public class GameBoard{
     public boolean redTurn;
 
     public GameBoard(){
-        redPiece.add(new Piece(0,1,true));
-        redPiece.add(new Piece(0,3,true));
-        redPiece.add(new Piece(0,5, true));
-        redPiece.add(new Piece(0,7, true));
-        redPiece.add(new Piece(1,0, true));
-        redPiece.add(new Piece(1,2, true));
-        redPiece.add(new Piece(1,4, true));
-        redPiece.add(new Piece(1,6, true));
-        redPiece.add(new Piece(2,1, true));
-        redPiece.add(new Piece(2,3, true));
-        redPiece.add(new Piece(2,5, true));
-        redPiece.add(new Piece(2,7, true));
-        blackPiece.add(new Piece(5,0, false));
-        blackPiece.add(new Piece(5,2, false));
-        blackPiece.add(new Piece(5,4, false));
-        blackPiece.add(new Piece(5,6, false));
-        blackPiece.add(new Piece(6,1, false));
-        blackPiece.add(new Piece(6,3, false));
-        blackPiece.add(new Piece(6,5, false));
-        blackPiece.add(new Piece(6,7, false));
-        blackPiece.add(new Piece(7,0, false));
-        blackPiece.add(new Piece(7,2, false));
-        blackPiece.add(new Piece(7,4, false));
-        blackPiece.add(new Piece(7,6, false));
+        redPiece.add(new Piece(0,1, PieceColor.RED));
+        redPiece.add(new Piece(0,3, PieceColor.RED));
+        redPiece.add(new Piece(0,5, PieceColor.RED));
+        redPiece.add(new Piece(0,7, PieceColor.RED));
+        redPiece.add(new Piece(1,0, PieceColor.RED));
+        redPiece.add(new Piece(1,2, PieceColor.RED));
+        redPiece.add(new Piece(1,4, PieceColor.RED));
+        redPiece.add(new Piece(1,6, PieceColor.RED));
+        redPiece.add(new Piece(2,1, PieceColor.RED));
+        redPiece.add(new Piece(2,3, PieceColor.RED));
+        redPiece.add(new Piece(2,5, PieceColor.RED));
+        redPiece.add(new Piece(2,7, PieceColor.RED));
+        blackPiece.add(new Piece(5,0, PieceColor.BLACK));
+        blackPiece.add(new Piece(5,2, PieceColor.BLACK));
+        blackPiece.add(new Piece(5,4, PieceColor.BLACK));
+        blackPiece.add(new Piece(5,6, PieceColor.BLACK));
+        blackPiece.add(new Piece(6,1, PieceColor.BLACK));
+        blackPiece.add(new Piece(6,3, PieceColor.BLACK));
+        blackPiece.add(new Piece(6,5, PieceColor.BLACK));
+        blackPiece.add(new Piece(6,7, PieceColor.BLACK));
+        blackPiece.add(new Piece(7,0, PieceColor.BLACK));
+        blackPiece.add(new Piece(7,2, PieceColor.BLACK));
+        blackPiece.add(new Piece(7,4, PieceColor.BLACK));
+        blackPiece.add(new Piece(7,6, PieceColor.BLACK));
 
     }
 
