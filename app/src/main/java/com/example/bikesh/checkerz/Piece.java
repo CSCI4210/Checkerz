@@ -8,14 +8,14 @@ import java.util.ArrayList;
 public class Piece {
     public boolean king;
     public boolean captured;
-    public boolean red;
+    public PieceColor color;
     public Position position;
     public ArrayList<Position> neighbors  = new ArrayList<Position>();
     public ArrayList<Position> moves  = new ArrayList<Position>();
-    public Piece(int x, int y, boolean z){
+    public Piece(int x, int y, PieceColor color){
         king = false;
         captured = false;
-        red = z;
+        color = color;
         position = new Position(x,y);
     }
 
