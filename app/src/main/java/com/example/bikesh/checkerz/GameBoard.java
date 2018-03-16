@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class GameBoard{
     public ArrayList<Piece> redPiece = new ArrayList<Piece>();
     public ArrayList<Piece> blackPiece = new ArrayList<Piece>();
-
+    public Location[][] initial;
     public boolean redTurn;
 
     public GameBoard(){
@@ -39,6 +39,8 @@ public class GameBoard{
         blackPiece.add(new Piece(7,2, PieceColor.BLACK));
         blackPiece.add(new Piece(7,4, PieceColor.BLACK));
         blackPiece.add(new Piece(7,6, PieceColor.BLACK));
+
+
 
     }
 
