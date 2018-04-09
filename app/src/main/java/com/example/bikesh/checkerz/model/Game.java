@@ -1,8 +1,6 @@
 package com.example.bikesh.checkerz.model;
 
 import com.example.bikesh.checkerz.GameState;
-import com.example.bikesh.checkerz.IPlayer;
-import com.example.bikesh.checkerz.model.PieceColor;
 
 /**
  * Created by dhemard on 3/10/18.
