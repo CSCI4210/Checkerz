@@ -1,5 +1,7 @@
 package com.example.bikesh.checkerz;
 
+import com.example.bikesh.checkerz.model.PieceColor;
+
 /**
  * Created by dhemard on 3/10/18.
  *

@@ -1,8 +1,7 @@
 package com.example.bikesh.checkerz;
 
-import android.app.Fragment;
-import android.media.Image;
-import android.widget.ImageButton;
+import com.example.bikesh.checkerz.model.PieceColor;
+
 import java.util.ArrayList;
 /**
  * Created by Bikesh on 3/7/2018.
