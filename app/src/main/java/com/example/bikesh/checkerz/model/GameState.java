@@ -1,7 +1,4 @@
-package com.example.bikesh.checkerz;
-
-import com.example.bikesh.checkerz.model.GameBoard;
-import com.example.bikesh.checkerz.model.PieceColor;
+package com.example.bikesh.checkerz.model;
 
 import java.util.Collections;
 
