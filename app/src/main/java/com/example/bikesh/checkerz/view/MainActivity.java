@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import com.example.bikesh.checkerz.model.GameBoard;
-import com.example.bikesh.checkerz.Piece;
+import com.example.bikesh.checkerz.model.Piece;
 import com.example.bikesh.checkerz.R;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{

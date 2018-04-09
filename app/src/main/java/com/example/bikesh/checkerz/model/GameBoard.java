@@ -1,8 +1,5 @@
 package com.example.bikesh.checkerz.model;
 
-import com.example.bikesh.checkerz.Piece;
-import com.example.bikesh.checkerz.model.PieceColor;
-
 import java.util.ArrayList;
 /**
  * Created by Bikesh on 3/7/2018.
