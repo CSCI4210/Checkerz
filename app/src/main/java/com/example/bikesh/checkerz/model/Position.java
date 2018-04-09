@@ -1,4 +1,4 @@
-package com.example.bikesh.checkerz;
+package com.example.bikesh.checkerz.model;
 
 /**
  * Created by Bikesh on 3/7/2018.
