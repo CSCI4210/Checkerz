@@ -1,13 +1,11 @@
 package com.example.bikesh.checkerz.view;
 
-import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 
-import com.example.bikesh.checkerz.GameBoard;
+import com.example.bikesh.checkerz.model.GameBoard;
 import com.example.bikesh.checkerz.Piece;
 import com.example.bikesh.checkerz.R;
 

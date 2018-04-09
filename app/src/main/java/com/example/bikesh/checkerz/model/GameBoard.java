@@ -1,5 +1,6 @@
-package com.example.bikesh.checkerz;
+package com.example.bikesh.checkerz.model;
 
+import com.example.bikesh.checkerz.Piece;
 import com.example.bikesh.checkerz.model.PieceColor;
 
 import java.util.ArrayList;
