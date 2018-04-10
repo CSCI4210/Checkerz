@@ -6,33 +6,32 @@ import java.util.ArrayList;
  */
 
 public class Piece {
-    public boolean king;
-    public boolean captured;
+    private boolean king;
+    private boolean captured;
     public PieceColor color;
-    public Position position;
+
     public ArrayList<Position> neighbors  = new ArrayList<Position>();
     public ArrayList<Position> moves  = new ArrayList<Position>();
-    public Piece(int x, int y, PieceColor color){
-        king = false;
-        captured = false;
-        color = color;
-        position = new Position(x,y);
+
+    public Piece(PieceColor color){
+        this.king = false;
+        this.captured = false;
+        this.color = color;
     }
 
-    public int getX(){
-        return  position.row;
+    public boolean isKing() {
+        return king;
     }
-    public int getY(){
-        return position.column;
+
+    public void setKing(boolean king) {
+        this.king = king;
     }
-    public void setKing(boolean z){
-        king = z;
+
+    public boolean isCaptured() {
+        return captured;
     }
-    //public ArrayList<Position> neighbors(){
 
-
-//    }
-  //  public ArrayList<Position> prospectiveMoves(){
-
-    //}
+    public void setCaptured(boolean captured) {
+        this.captured = captured;
+    }
 }
