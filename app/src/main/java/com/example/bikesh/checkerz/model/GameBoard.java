@@ -6,44 +6,43 @@ import java.util.ArrayList;
  */
 
 public class GameBoard{
-    public ArrayList<Piece> redPiece = new ArrayList<Piece>();
-    public ArrayList<Piece> blackPiece = new ArrayList<Piece>();
 
-    public boolean redTurn;
+    public Square[][] grid = new Square[8][8];
 
-    public GameBoard(){
-        redPiece.add(new Piece(0,1, PieceColor.RED));
-        redPiece.add(new Piece(0,3, PieceColor.RED));
-        redPiece.add(new Piece(0,5, PieceColor.RED));
-        redPiece.add(new Piece(0,7, PieceColor.RED));
-        redPiece.add(new Piece(1,0, PieceColor.RED));
-        redPiece.add(new Piece(1,2, PieceColor.RED));
-        redPiece.add(new Piece(1,4, PieceColor.RED));
-        redPiece.add(new Piece(1,6, PieceColor.RED));
-        redPiece.add(new Piece(2,1, PieceColor.RED));
-        redPiece.add(new Piece(2,3, PieceColor.RED));
-        redPiece.add(new Piece(2,5, PieceColor.RED));
-        redPiece.add(new Piece(2,7, PieceColor.RED));
-        blackPiece.add(new Piece(5,0, PieceColor.BLACK));
-        blackPiece.add(new Piece(5,2, PieceColor.BLACK));
-        blackPiece.add(new Piece(5,4, PieceColor.BLACK));
-        blackPiece.add(new Piece(5,6, PieceColor.BLACK));
-        blackPiece.add(new Piece(6,1, PieceColor.BLACK));
-        blackPiece.add(new Piece(6,3, PieceColor.BLACK));
-        blackPiece.add(new Piece(6,5, PieceColor.BLACK));
-        blackPiece.add(new Piece(6,7, PieceColor.BLACK));
-        blackPiece.add(new Piece(7,0, PieceColor.BLACK));
-        blackPiece.add(new Piece(7,2, PieceColor.BLACK));
-        blackPiece.add(new Piece(7,4, PieceColor.BLACK));
-        blackPiece.add(new Piece(7,6, PieceColor.BLACK));
-
+    // Constructor for the starting configuration of the board
+    public GameBoard() {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (i <= 2) {
+                    if ((i + j) % 2 == 1) {
+                        grid[i][j] = new Square(
+                                new Position(i,j),
+                                new Piece(PieceColor.RED));
+                    }
+                } else if (i >= 5) {
+                    if ((i + j) % 2 == 1) {
+                        grid[i][j] = new Square(
+                                new Position(i,j),
+                                new Piece(PieceColor.BLACK));
+                    }
+                } else {
+                    grid[i][j] = new Square(
+                            new Position(i,j),
+                            null);
+                }
+            }
+        }
     }
 
-    public ArrayList<Piece> getReds(){
-        return redPiece;
+    /**
+     * Moves a piece currently at one position to a different position as the
+     * result of a Valid move. There must be a piece at that current position
+     * on the Board.
+     * @param currentPos the row and column of the piece to be moved
+     * @param newPos the row and column of the desired new position
+     * @return a GameBoard where the piece is located at its new position
+     */
+    public GameBoard movePiece (Position currentPos, Position newPos) {
+        return null;
     }
-    public ArrayList<Piece> getBlacks(){
-        return blackPiece;
-    }
-
 }
