@@ -1,38 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- In order to use Data Binding, the root layout structure must be wrapped in "layout" tags -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-    <data></data>
+
+    <!-- This layout is bound to the View (MainActivity). In order to interact with methods
+         of the View Model, a variable must be declared within the "data" tags first -->
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.bikesh.checkerz.viewmodel.CheckersViewModel"/>
+    </data>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         tools:context="com.example.bikesh.checkerz.view.MainActivity">
-        <RelativeLayout
+        <GridLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:rowCount="2">
+
+            <!-- TODO: Highlight the name of the player whose turn it is using data binding -->
             <TextView
                 android:id="@+id/text_view_p1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Black: "
+                android:text="Black:   "
+                android:textColor="@{viewModel.blacksTurn ? @color/textColorHighlight : @color/textColorPrimary}"
                 android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_row="0"
+                android:layout_column="0"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="White: "
+                android:text="Red:   "
+                android:textColor="@{viewModel.redsTurn ? @color/textColorHighlight : @color/textColorPrimary}"
                 android:textSize="15sp"
                 android:id="@+id/text_view_p2"
-                android:layout_below="@+id/text_view_p1"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </RelativeLayout>
+                android:layout_row="1"
+                android:layout_column="0"/>
+            <TextView
+                android:id="@+id/tv_black_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{String.valueOf(viewModel.blackCaptures)}"
+                android:textSize="15sp"
+                android:layout_row="0"
+                android:layout_column="1"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{String.valueOf(viewModel.redCaptures)}"
+                android:textSize="15sp"
+                android:id="@+id/tv_white_score"
+                android:layout_row="1"
+                android:layout_column="1"/>
+        </GridLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"

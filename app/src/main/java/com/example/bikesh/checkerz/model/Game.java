@@ -11,7 +11,9 @@ public class Game {
     final IPlayer blackPlayer;
     final IPlayer redPlayer;
     private int blackMoves;
+    private int blackCaptures;
     private int redMoves;
+    private int redCaptures;
     private IPlayer winner;
     private GameState currentState;
 
@@ -21,8 +23,12 @@ public class Game {
         this.winner = null;
         this.blackMoves = 0;
         this.redMoves = 0;
+        this.blackCaptures = 0;
+        this.redCaptures = 0;
+        this.currentState = new GameState();
     }
 
+    // TODO: Change this method. This would be useful if two Bots were playing against each other. We need something more event driven.
     public void play(){
         this.currentState = new GameState();
         GameState chosenState;
@@ -32,7 +38,7 @@ public class Game {
          * move counter should then be incremented. Last, check if there is a
          * winner or if the game is a draw.
          */
-        while(!currentState.over){
+        while(!currentState.isOver()){
             if(currentState.getCurrentColor() == PieceColor.BLACK){
                 chosenState = blackPlayer.chooseMove(currentState);
                 blackMoves += 1;
@@ -55,12 +61,33 @@ public class Game {
         return null;
     }
 
+    /**
+     * A method to reset the state of the Game to as it was when it started.
+     * Note: This keeps the same players. To choose new players, construct a new Game instance
+     */
+    public void resetGame() {
+        this.winner = null;
+        this.blackMoves = 0;
+        this.redMoves = 0;
+        this.blackCaptures = 0;
+        this.redCaptures = 0;
+        this.currentState = new GameState();
+    }
+
     public int getBlackMoves() {
         return blackMoves;
     }
 
     public void setBlackMoves(int blackMoves) {
         this.blackMoves = blackMoves;
+    }
+
+    public int getBlackCaptures() {
+        return blackCaptures;
+    }
+
+    public void setBlackCaptures(int blackCaptures) {
+        this.blackCaptures = blackCaptures;
     }
 
     public int getRedMoves() {
@@ -71,7 +98,19 @@ public class Game {
         this.redMoves = redMoves;
     }
 
+    public int getRedCaptures() {
+        return redCaptures;
+    }
+
+    public void setRedCaptures(int redCaptures) {
+        this.redCaptures = redCaptures;
+    }
+
     public IPlayer getWinner() {
         return winner;
+    }
+
+    public GameState getCurrentState() {
+        return currentState;
     }
 }
