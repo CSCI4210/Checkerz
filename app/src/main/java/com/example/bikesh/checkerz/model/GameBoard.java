@@ -1,6 +1,5 @@
 package com.example.bikesh.checkerz.model;
 
-import java.util.ArrayList;
 /**
  * Created by Bikesh on 3/7/2018.
  */
