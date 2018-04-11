@@ -84,7 +84,7 @@ public class CheckersViewModel implements IViewModel {
 
     public void onNewGameSelected() {}
 
-    public void onPlayAgainSelected() {}
+    public void onRestartGameSelected() {}
 
     public void onCellClickedAt(int row, int col) {
         //Check if a move is in progress
