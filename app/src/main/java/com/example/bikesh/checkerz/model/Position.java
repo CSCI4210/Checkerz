@@ -18,5 +18,8 @@ public class Position {
         column = y;
     }
 
-
+    @Override
+    public String toString() {
+        return "" + String.valueOf(row) + String.valueOf(column);
+    }
 }

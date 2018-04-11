@@ -8,11 +8,12 @@ import java.util.Collections;
 
 public class GameState {
 
+    private GameState previous;
     private GameBoard board;
     private PieceColor currentColor;
-    public GameState previous;
-    public boolean over;
-    public int turn;
+    private Piece currentlySelectedPiece;
+    private boolean over;
+    private int turn;
 
     /**
      * Constructor for creating the initial GameState.
@@ -27,6 +28,7 @@ public class GameState {
         this.currentColor = PieceColor.BLACK;
     }
 
+    //TODO: The constructor should create a new Gamestate instance from this one instead of just changing this one
     /**
      * Constructor for creating a GameState from a previous state.
      * @param parent the GameState this state is a descendant of
@@ -80,6 +82,14 @@ public class GameState {
         //TODO: implement this method
     }
 
+    public GameState getPrevious() {
+        return previous;
+    }
+
+    public void setPrevious(GameState previous) {
+        this.previous = previous;
+    }
+
     public GameBoard getBoard() {
         return board;
     }
@@ -90,5 +100,33 @@ public class GameState {
 
     public PieceColor getCurrentColor() {
         return currentColor;
+    }
+
+    public void setCurrentColor(PieceColor currentColor) {
+        this.currentColor = currentColor;
+    }
+
+    public Piece getCurrentlySelectedPiece() {
+        return currentlySelectedPiece;
+    }
+
+    public void setCurrentlySelectedPiece(Piece currentlySelectedPiece) {
+        this.currentlySelectedPiece = currentlySelectedPiece;
+    }
+
+    public boolean isOver() {
+        return over;
+    }
+
+    public void setOver(boolean over) {
+        this.over = over;
+    }
+
+    public int getTurn() {
+        return turn;
+    }
+
+    public void setTurn(int turn) {
+        this.turn = turn;
     }
 }
