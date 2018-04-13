@@ -82,9 +82,21 @@ public class CheckersViewModel implements IViewModel {
     //Implement actions callable by the view that will update both
     // the Model and the Observables
 
-    public void onNewGameSelected() {}
+    public void onNewGameSelected() {
+        this.model = new Game(new Human("John"), new Human("Jane"));
+        //Set the observables with data from the model
+        if (model.getCurrentState().getCurrentColor().equals(PieceColor.RED)) {
+            this.redsTurn.set(true);
+        } else {
+            this.blacksTurn.set(true);
+        }
+        // Initialize the observable grid with the state of the Game's GameBoard
+    }
 
-    public void onRestartGameSelected() {}
+    public void onRestartGameSelected() {
+        this.model.resetGame();
+        // Initialize the observables
+    }
 
     public void onCellClickedAt(int row, int col) {
         //Check if a move is in progress
