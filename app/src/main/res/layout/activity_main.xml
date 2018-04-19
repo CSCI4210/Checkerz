@@ -24,7 +24,6 @@
             android:columnCount="2"
             android:rowCount="2">
 
-            <!-- TODO: Highlight the name of the player whose turn it is using data binding -->
             <TextView
                 android:id="@+id/text_view_p1"
                 android:layout_width="wrap_content"
@@ -76,7 +75,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["01"] == 0 ? @drawable/board2 : (viewModel.grid["01"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_02"
@@ -90,7 +89,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["03"] == 0 ? @drawable/board2 : (viewModel.grid["03"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_04"
@@ -105,7 +104,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["05"] == 0 ? @drawable/board2 : (viewModel.grid["05"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_06"
@@ -119,7 +118,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["07"] == 0 ? @drawable/board2 : (viewModel.grid["07"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
 
         </LinearLayout>
@@ -132,7 +131,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["10"] == 0 ? @drawable/board2 : (viewModel.grid["10"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_11"
@@ -146,7 +145,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["12"] == 0 ? @drawable/board2 : (viewModel.grid["12"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_13"
@@ -160,7 +159,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["14"] == 0 ? @drawable/board2 : (viewModel.grid["14"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_15"
@@ -174,7 +173,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["16"] == 0 ? @drawable/board2 : (viewModel.grid["16"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_17"
@@ -201,7 +200,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["21"] == 0 ? @drawable/board2 : (viewModel.grid["21"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_22"
@@ -215,7 +214,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["23"] == 0 ? @drawable/board2 : (viewModel.grid["23"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_24"
@@ -229,7 +228,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["25"] == 0 ? @drawable/board2 : (viewModel.grid["25"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_26"
@@ -243,7 +242,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["27"] == 0 ? @drawable/board2 : (viewModel.grid["27"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
 
         </LinearLayout>
@@ -256,7 +255,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["30"] == 0 ? @drawable/board2 : (viewModel.grid["30"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_31"
@@ -270,7 +269,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["32"] == 0 ? @drawable/board2 : (viewModel.grid["32"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_33"
@@ -284,7 +283,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["34"] == 0 ? @drawable/board2 : (viewModel.grid["34"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_35"
@@ -298,7 +297,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["36"] == 0 ? @drawable/board2 : (viewModel.grid["36"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_37"
@@ -325,7 +324,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["41"] == 0 ? @drawable/board2 : (viewModel.grid["41"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_42"
@@ -339,7 +338,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["43"] == 0 ? @drawable/board2 : (viewModel.grid["43"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_44"
@@ -353,7 +352,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["45"] == 0 ? @drawable/board2 : (viewModel.grid["45"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_46"
@@ -367,7 +366,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["47"] == 0 ? @drawable/board2 : (viewModel.grid["47"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
 
         </LinearLayout>
@@ -380,7 +379,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["50"] == 0 ? @drawable/board2 : (viewModel.grid["50"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_51"
@@ -394,7 +393,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["52"] == 0 ? @drawable/board2 : (viewModel.grid["52"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_53"
@@ -408,7 +407,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["54"] == 0 ? @drawable/board2 : (viewModel.grid["54"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_55"
@@ -422,7 +421,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["56"] == 0 ? @drawable/board2 : (viewModel.grid["56"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_57"
@@ -449,7 +448,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["61"] == 0 ? @drawable/board2 : (viewModel.grid["61"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_62"
@@ -463,7 +462,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["63"] == 0 ? @drawable/board2 : (viewModel.grid["63"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_64"
@@ -477,7 +476,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["65"] == 0 ? @drawable/board2 : (viewModel.grid["65"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_66"
@@ -491,7 +490,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["67"] == 0 ? @drawable/board2 : (viewModel.grid["67"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
 
         </LinearLayout>
@@ -504,7 +503,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["70"] == 0 ? @drawable/board2 : (viewModel.grid["70"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_71"
@@ -518,7 +517,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["72"] == 0 ? @drawable/board2 : (viewModel.grid["72"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_73"
@@ -532,7 +531,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["74"] == 0 ? @drawable/board2 : (viewModel.grid["74"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_75"
@@ -546,7 +545,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="30sp"
-                android:background="@drawable/board2"
+                android:background='@{viewModel.grid["76"] == 0 ? @drawable/board2 : (viewModel.grid["76"] == 1 ? @drawable/board2wb : @drawable/board2wr)}'
                 android:layout_weight="1"/>
             <ImageButton
                 android:id="@+id/button_77"

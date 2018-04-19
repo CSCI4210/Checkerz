@@ -12,19 +12,29 @@ public class GameBoard{
     public GameBoard() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (i <= 2) {
+                if (i <= 2) {   // The first three rows
+                    // If the sum of the indices is odd, the square gets a red piece
                     if ((i + j) % 2 == 1) {
                         grid[i][j] = new Square(
                                 new Position(i,j),
                                 new Piece(PieceColor.RED));
+                    } else { // The square does not get a piece
+                        grid[i][j] = new Square(
+                                new Position(i,j),
+                                null);
                     }
-                } else if (i >= 5) {
+                } else if (i >= 5) {    // The last three rows
+                    // If the sum of the indices is odd, the square gets a black piece
                     if ((i + j) % 2 == 1) {
                         grid[i][j] = new Square(
                                 new Position(i,j),
                                 new Piece(PieceColor.BLACK));
+                    } else { // The square does not get a piece
+                        grid[i][j] = new Square(
+                                new Position(i,j),
+                                null);
                     }
-                } else {
+                } else { // The remaining squares in the middle rows get no pieces
                     grid[i][j] = new Square(
                             new Position(i,j),
                             null);

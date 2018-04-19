@@ -31,17 +31,6 @@ public class CheckersViewModel implements IViewModel {
     public final ObservableArrayMap<String, Integer> grid = new ObservableArrayMap<>();
 
     public CheckersViewModel() {
-        //TODO: move some of this to a method that is called when a 'New Game' option is selected in the View
-        Human human1 = new Human("Bill");
-        Human human2 = new Human("Ted");
-        this.model = new Game(human1, human2);
-
-        //Set the observables with data from the model
-        if (model.getCurrentState().getCurrentColor().equals(PieceColor.RED)) {
-            this.redsTurn.set(true);
-        } else {
-            this.blacksTurn.set(true);
-        }
     }
 
 
@@ -49,22 +38,68 @@ public class CheckersViewModel implements IViewModel {
     // model during these events
     @Override
     public void onCreate() {
-
     }
 
     @Override
     public void onPause() {
-
     }
 
     @Override
     public void onResume() {
-
     }
 
     @Override
     public void onDestroy() {
+    }
 
+
+    //Implement actions callable by the view that will update both
+    // the Model and the Observables
+
+    public void onNewGameSelected() {
+        this.model = new Game(new Human("Bill"), new Human("Ted"));
+        //Set the observables with data from the model
+        initializeTurnObservable();
+        // Initialize the observable grid with the state of the Game's GameBoard
+        initializeGridObservable();
+    }
+
+    public void onRestartGameSelected() {
+        // Reset the state of the model
+        this.model.resetGame();
+        // Re-initialize the observables
+        initializeTurnObservable();
+        initializeGridObservable();
+    }
+
+    // TODO: Implement the click logic
+    public void onCellClickedAt(int row, int col) {
+        //Check if a move is in progress
+            //If yes
+                //move the piece to the clicked cell in the model (after validating)
+                //Then update the observable with the new piece positions
+                //Go to the next turn in the model
+                //Toggle the turn in the Observable
+            //If not
+                //Check if the cell has a Piece
+                    //If yes
+                        //'select' the piece in the model
+                        //then 'select' the piece in the the observable
+                    //If not
+                        //Ignore the click
+    }
+
+
+    // Private methods for manipulating the observables
+
+    private void initializeTurnObservable () {
+        if (model.getCurrentState().getCurrentColor().equals(PieceColor.RED)) {
+            this.redsTurn.set(true);
+            this.blacksTurn.set(false);
+        } else {
+            this.blacksTurn.set(true);
+            this.redsTurn.set(false);
+        }
     }
 
     private void toggleTurnObservable() {
@@ -79,60 +114,17 @@ public class CheckersViewModel implements IViewModel {
         }
     }
 
-    //Implement actions callable by the view that will update both
-    // the Model and the Observables
-
-    public void onNewGameSelected() {
-        this.model = new Game(new Human("John"), new Human("Jane"));
-        //Set the observables with data from the model
-        if (model.getCurrentState().getCurrentColor().equals(PieceColor.RED)) {
-            this.redsTurn.set(true);
-        } else {
-            this.blacksTurn.set(true);
-        }
-        // Initialize the observable grid with the state of the Game's GameBoard
-    }
-
-    public void onRestartGameSelected() {
-        this.model.resetGame();
-        // Initialize the observables
-    }
-
-    public void onCellClickedAt(int row, int col) {
-        //Check if a move is in progress
-            //If yes
-                //move the piece to the clicked cell in the model (after validating)
-                //Then update the observable with the new piece positions
-                //Go to the next turn in the model
-                //Toggle the turn in the Observable
-            //If not
-                //Check if the cell has a Piece
-                    //If yes
-                        //select the piece in the model
-                        //then select the piece in the the observable
-                    //If not
-                        //Ignore the click
-    }
-
-    //TODO: change method name
-    public void onSomething() {
-        //TODO: Fix null pointer exception. Implement start game menu with callback to start a new game
+    private void initializeGridObservable() {
         Square[][] initialGrid = model.getCurrentState().getBoard().grid;
         for (int i = 0; i < initialGrid.length; i++) {
             for (int j = 0; j < initialGrid[i].length; j++) {
                 if (!initialGrid[i][j].isEmpty()) {
                     if (initialGrid[i][j].getPiece().color == PieceColor.BLACK){
-                        //Print Debugging
-                        System.out.println(initialGrid[i][j].getPosition().toString());
                         this.grid.put("" + initialGrid[i][j].getPosition().toString(), 1);
                     } else {
-                        //Print Debugging
-                        System.out.println(initialGrid[i][j].getPosition().toString());
                         this.grid.put("" + initialGrid[i][j].getPosition().toString(), 2);
                     }
                 } else {
-                    //Print Debugging
-                    System.out.println(initialGrid[i][j].getPosition().toString());
                     this.grid.put("" + initialGrid[i][j].getPosition().toString(), 0);
                 }
             }
