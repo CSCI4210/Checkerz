@@ -1,4 +1,4 @@
-package com.example.bikesh.checkerz;
+package com.example.bikesh.checkerz.model;
 
 /**
  * Created by Bikesh on 3/7/2018.
@@ -18,5 +18,8 @@ public class Position {
         column = y;
     }
 
-
+    @Override
+    public String toString() {
+        return "" + String.valueOf(row) + String.valueOf(column);
+    }
 }
