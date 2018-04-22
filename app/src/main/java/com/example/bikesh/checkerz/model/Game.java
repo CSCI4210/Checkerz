@@ -8,8 +8,8 @@ package com.example.bikesh.checkerz.model;
  */
 
 public class Game {
-    final IPlayer blackPlayer;
-    final IPlayer redPlayer;
+    private final IPlayer blackPlayer;
+    private final IPlayer redPlayer;
     private int blackMoves;
     private int blackCaptures;
     private int redMoves;
@@ -29,15 +29,15 @@ public class Game {
     }
 
     // TODO: Change this method. This would be useful if two Bots were playing against each other. We need something more event driven.
-    public void play(){
+ /*   public void play(){
         this.currentState = new GameState();
         GameState chosenState;
-        /* While loop that handles one turn in the game.
+        *//* While loop that handles one turn in the game.
          * While the game is not over: The current player will choose a move
          * from one of the child states of the currentState. That player's
          * move counter should then be incremented. Last, check if there is a
          * winner or if the game is a draw.
-         */
+         *//*
         while(!currentState.isOver()){
             if(currentState.getCurrentColor() == PieceColor.BLACK){
                 chosenState = blackPlayer.chooseMove(currentState);
@@ -49,6 +49,23 @@ public class Game {
             this.currentState = chosenState;
         }
         this.winner = determineWinner();
+    }
+*/
+    public void advanceTurn(GameState chosenState) {
+        if (currentState.getCurrentColor() == PieceColor.BLACK) {
+            blackMoves++;
+            blackCaptures += (currentState.getBoard().numberOfRedPieces()
+                    - chosenState.getBoard().numberOfRedPieces());
+        } else {
+            redMoves++;
+            redCaptures += (currentState.getBoard().numberOfBlackPieces()
+                    - chosenState.getBoard().numberOfBlackPieces());
+        }
+        // Switch the current state to the chosen state, which makes it the OTHER PLAYER'S TURN
+        this.currentState = chosenState;
+        if (currentState.isOver()) {
+            this.winner = determineWinner();
+        }
     }
 
     /**
@@ -72,6 +89,14 @@ public class Game {
         this.blackCaptures = 0;
         this.redCaptures = 0;
         this.currentState = new GameState();
+    }
+
+    public IPlayer getBlackPlayer() {
+        return blackPlayer;
+    }
+
+    public IPlayer getRedPlayer() {
+        return redPlayer;
     }
 
     public int getBlackMoves() {
