@@ -20,6 +20,14 @@ public class Position {
         column = y;
     }
 
+    public int getX(){
+        return row;
+    }
+    public int getY(){
+        return column;
+    }
+
+
     @Override
     public String toString() {
         return "" + String.valueOf(row) + String.valueOf(column);

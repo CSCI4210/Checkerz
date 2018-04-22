@@ -97,6 +97,144 @@ public class GameBoard{
      */
     public HashSet<Position> getAvailableMoves (Position positionOfPiece) {
         //TODO: Implement this method. Will be used to display available moves in the View
-        return new HashSet<>();
+        int cRow = positionOfPiece.row;
+        int cCol = positionOfPiece.column;
+        Piece pieceToMove = grid[cRow][cCol].getPiece();
+
+        HashSet<Position> neighbors = new HashSet<Position>();
+
+        if (pieceToMove.isKing() == true){
+            if ((cRow+1 < 8) && (cCol+1 < 8)){
+                if (grid[cRow+1][cCol+1].isEmpty()) {
+                    neighbors.add(grid[cRow + 1][cCol + 1].getPosition());
+                }
+                else{
+                    if (cRow+2<8 && cCol+2<8){
+                        if (grid[cRow+2][cCol+2].isEmpty()) {
+                            if (grid[cRow + 1][cCol + 1].getPiece().color != pieceToMove.color) {
+                                neighbors.add(grid[cRow + 2][cCol + 2].getPosition());
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            if ((cRow-1 > -1) && (cCol-1 > -1)){
+                if (grid[cRow-1][cCol-1].isEmpty()) {
+                    neighbors.add(grid[cRow - 1][cCol - 1].getPosition());
+                }
+                else{
+                    if (cRow-2>-1 && cCol-2>-1){
+                        if (grid[cRow-2][cCol-2].isEmpty()) {
+                            if (grid[cRow - 1][cCol - 1].getPiece().color != pieceToMove.color) {
+                                neighbors.add(grid[cRow - 2][cCol - 2].getPosition());
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ((cRow+1 < 8) && (cCol-1 > -1)){
+                if (grid[cRow+1][cCol-1].isEmpty()) {
+                    neighbors.add(grid[cRow + 1][cCol - 1].getPosition());
+                }
+                else{
+                    if (cRow+2<8 && cCol-2>-1){
+                        if (grid[cRow+2][cCol-2].isEmpty()) {
+                            if (grid[cRow + 1][cCol - 1].getPiece().color != pieceToMove.color) {
+                                neighbors.add(grid[cRow + 2][cCol - 2].getPosition());
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ((cRow-1 < 8) && (cCol+1 < 8)){
+                if (grid[cRow-1][cCol+1].isEmpty()) {
+                    neighbors.add(grid[cRow - 1][cCol + 1].getPosition());
+                }
+                else{
+                    if (cRow-2>-1&& cCol+2<8){
+                        if (grid[cRow-2][cCol+2].isEmpty()) {
+                            if (grid[cRow - 1][cCol + 1].getPiece().color != pieceToMove.color) {
+                                neighbors.add(grid[cRow - 2][cCol + 2].getPosition());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+       else if (pieceToMove.isKing() == false){
+            if (pieceToMove.color == PieceColor.RED){
+                if ((cRow+1 < 8) && (cCol+1 < 8)){
+                    if (grid[cRow+1][cCol+1].isEmpty()) {
+                        neighbors.add(grid[cRow + 1][cCol + 1].getPosition());
+                    }
+                    else{
+                        if (cRow+2<8 && cCol+2<8){
+                            if (grid[cRow+2][cCol+2].isEmpty()) {
+                                if (grid[cRow + 1][cCol + 1].getPiece().color != pieceToMove.color) {
+                                    neighbors.add(grid[cRow + 2][cCol + 2].getPosition());
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if ((cRow+1 < 8) && (cCol-1 > -1)){
+                    if (grid[cRow+1][cCol-1].isEmpty()) {
+                        neighbors.add(grid[cRow + 1][cCol - 1].getPosition());
+                    }
+                    else{
+                        if (cRow+2<8 && cCol-2>-1){
+                            if (grid[cRow+2][cCol-2].isEmpty()) {
+                                if (grid[cRow + 1][cCol - 1].getPiece().color != pieceToMove.color) {
+                                    neighbors.add(grid[cRow + 2][cCol - 2].getPosition());
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            else if (pieceToMove.color == PieceColor.BLACK){
+
+                if ((cRow-1 > -1) && (cCol-1 > -1)){
+                    if (grid[cRow-1][cCol-1].isEmpty()) {
+                        neighbors.add(grid[cRow - 1][cCol - 1].getPosition());
+                    }
+                    else{
+                        if (cRow-2>-1 && cCol-2>-1){
+                            if (grid[cRow-2][cCol-2].isEmpty()) {
+                                if (grid[cRow - 1][cCol - 1].getPiece().color != pieceToMove.color) {
+                                    neighbors.add(grid[cRow - 2][cCol - 2].getPosition());
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if ((cRow-1 < 8) && (cCol+1 < 8)){
+                    if (grid[cRow-1][cCol+1].isEmpty()) {
+                        neighbors.add(grid[cRow - 1][cCol + 1].getPosition());
+                    }
+                    else{
+                        if (cRow-2>-1&& cCol+2<8){
+                            if (grid[cRow-2][cCol+2].isEmpty()) {
+                                if (grid[cRow - 1][cCol + 1].getPiece().color != pieceToMove.color) {
+                                    neighbors.add(grid[cRow - 2][cCol + 2].getPosition());
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+            }
+        }
+        return neighbors;
     }
 }
