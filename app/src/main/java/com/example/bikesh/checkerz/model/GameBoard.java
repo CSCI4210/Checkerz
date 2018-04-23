@@ -53,26 +53,27 @@ public class GameBoard{
      * @param currentPosition the row and column of the piece to be moved
      * @param newPosition the row and column of the desired new position
      * @return a GameBoard where the piece is located at its new position
+     * @throws IllegalArgumentException
      */
-    public GameBoard movePiece (Position currentPosition, Position newPosition) {
+    public GameBoard movePiece (Position currentPosition, Position newPosition)
+            throws IllegalArgumentException {
         int cRow = currentPosition.row;
         int cCol = currentPosition.column;
         int nRow = newPosition.row;
         int nCol = newPosition.column;
-        /* Move validation should be handled in the CALLER or method will
-         *  return null! */
+        /* Most of the move validation should be handled in the CALLER */
 
         // Get piece at current position
         Piece pieceToMove = grid[cRow][cCol].getPiece();
         if(pieceToMove == null)
-            return null;
+            throw new IllegalArgumentException("No piece exists at specified currentPosition");
 
         // Remove piece from current position
         grid[cRow][cCol].setPiece(null);
 
         // Move piece to new position
         if (!grid[nRow][nCol].isEmpty())
-            return null;
+            throw new IllegalArgumentException("Already a piece at specified newPosition");
         grid[nRow][nCol].setPiece(pieceToMove);
         return this;
     }
@@ -87,6 +88,12 @@ public class GameBoard{
 
     public int numberOfRedPieces() {
         return redPieces.size();
+    }
+    public void removePiece(Piece x){
+    }
+
+    public Position getMid(Position oldPos, Position newPos){
+        return null;
     }
 
     /**
