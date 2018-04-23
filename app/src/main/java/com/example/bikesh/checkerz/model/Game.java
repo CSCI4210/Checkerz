@@ -56,7 +56,7 @@ public class Game {
             blackMoves++;
             //blackCaptures += (currentState.getBoard().numberOfRedPieces()
             //        - chosenState.getBoard().numberOfRedPieces());
-
+            blackCaptures = 12 - chosenState.getBoard().numberOfRedPieces();
         } else {
             redMoves++;
             //redCaptures += (currentState.getBoard().numberOfBlackPieces()
