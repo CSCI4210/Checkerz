@@ -95,8 +95,8 @@ public class GameBoard{
 
         if (x.color == PieceColor.RED) {
             redPieces.remove(x);
-            String s = Integer.toString(redPieces.size());
-            Log.d("ready", s);
+//            String s = Integer.toString(redPieces.size());
+//            Log.d("ready", s);
         }
         else {
             blackPieces.remove(x);
