@@ -89,6 +89,12 @@ public class GameBoard{
     public int numberOfRedPieces() {
         return redPieces.size();
     }
+    public void removePiece(Piece x){
+    }
+
+    public Position getMid(Position oldPos, Position newPos){
+        return null;
+    }
 
     /**
      * This method will be used to determine the moves that are available to a selected piece.

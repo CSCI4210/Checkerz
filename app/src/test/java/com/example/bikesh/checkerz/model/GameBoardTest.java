@@ -103,6 +103,29 @@ public class GameBoardTest {
     }
 
     @Test
+    public void removePiece() {
+        Square squareBeforePieceRemoval = gameBoard.getGrid()[2][3];
+        assertEquals(12, gameBoard.numberOfRedPieces());
+        assertFalse(squareBeforePieceRemoval.isEmpty());
+
+        gameBoard.removePiece(squareBeforePieceRemoval.getPiece());
+
+        Square squareAfterPieceRemoval = gameBoard.getGrid()[2][3];
+        assertEquals(11, gameBoard.numberOfRedPieces());
+        assertTrue(squareAfterPieceRemoval.isEmpty());
+    }
+
+    @Test
+    public void getMid() {
+        Position result;
+        Position initialPosition = new Position(4,3);
+        Position finalPosition = new Position(2,5);
+
+        result = gameBoard.getMid(initialPosition, finalPosition);
+        assertEquals(new Position(3,4), result);
+    }
+
+    @Test
     public void numberOfBlackPieces() {
         assertEquals(12, gameBoard.numberOfBlackPieces());
     }
