@@ -2,6 +2,7 @@ package com.example.bikesh.checkerz.model;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.lang.Math;
 
 /**
  * Created by dhemard on 3/9/18.
@@ -96,9 +97,9 @@ public class GameState {
      */
     public GameState next(Piece selectedPiece, Position currentPosition, Position newPosition) throws IllegalArgumentException {
         GameBoard currentBoard = this.board;
-        /* Move Validation */
+
         //TODO: Uncomment once GameBoard.getAvailableMoves() is implemented
-        /*if (this.currentColor != selectedPiece.color)
+        if (this.currentColor != selectedPiece.color)
             throw new IllegalArgumentException("Selected piece's color and the color whose turn it is no not match");
         if (currentBoard.getGrid()[currentPosition.row][currentPosition.column].isEmpty())
             throw new IllegalArgumentException("Cannot move piece from an empty square");
@@ -110,10 +111,20 @@ public class GameState {
             //TODO: maybe handle this error another way
             throw new IllegalArgumentException("Not an available move");
         }
-*/
+        if (Math.abs(newPosition.getX()-currentPosition.getX())!=2){
         GameBoard newBoard = currentBoard.movePiece(currentPosition, newPosition);
         GameState childState = new GameState(this, newBoard);
-        return childState;
+        return childState;}
+        else{
+            Position midPosition = currentBoard.getMid(currentPosition, newPosition);
+            currentBoard.getGrid()[midPosition.getX()][midPosition.getY()].getPiece().isCaptured();
+            currentBoard.removePiece(currentBoard.getGrid()[midPosition.getX()][midPosition.getY()].getPiece());
+            currentBoard.getGrid()[midPosition.getX()][midPosition.getY()].setPiece(null);
+            GameBoard newBoard = currentBoard.movePiece(currentPosition, newPosition);
+            GameState childState = new GameState(this, newBoard);
+            return childState;
+        }
+
     }
 
     /**
@@ -125,6 +136,7 @@ public class GameState {
         //TODO: implement this method
         return false;
     }
+
 
     public GameState getPrevious() {
         return previous;
