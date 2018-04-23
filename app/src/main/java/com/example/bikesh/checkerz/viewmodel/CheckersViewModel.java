@@ -133,6 +133,8 @@ public class CheckersViewModel implements IViewModel {
                         selectedSquare.getPosition(),
                         clickedPosition,
                         currentColor);
+
+                initializeGridAndAvailableMovesObservables();
                 //Clear the human's selectedSquare in model (maybe do AFTER updateGridObservable())
                 currentHuman.setSelectedSquare(null);
                 //Toggle the turn in the Observable
