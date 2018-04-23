@@ -1,5 +1,7 @@
 package com.example.bikesh.checkerz.model;
 
+import android.util.Log;
+
 import java.util.HashSet;
 
 /**
@@ -90,10 +92,25 @@ public class GameBoard{
         return redPieces.size();
     }
     public void removePiece(Piece x){
-    }
 
+        if (x.color == PieceColor.RED) {
+            redPieces.remove(x);
+            String s = Integer.toString(redPieces.size());
+            Log.d("ready", s);
+        }
+        else {
+            blackPieces.remove(x);
+        }
+        for(int i = 0; i<8;i++){
+            for (int j=0; j < 8; j++){
+
+                if (grid[i][j].getPiece() == x) grid[i][j] = new Square( new Position(i,j), null );
+            }
+        }
+    }
     public Position getMid(Position oldPos, Position newPos){
-        return null;
+
+        return new Position((oldPos.getX()+newPos.getX())/2, (oldPos.getY()+newPos.getY())/2);
     }
 
     /**

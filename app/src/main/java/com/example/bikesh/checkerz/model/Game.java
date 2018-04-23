@@ -54,12 +54,14 @@ public class Game {
     public void advanceTurn(GameState chosenState) {
         if (currentState.getCurrentColor() == PieceColor.BLACK) {
             blackMoves++;
-            blackCaptures += (currentState.getBoard().numberOfRedPieces()
-                    - chosenState.getBoard().numberOfRedPieces());
+            //blackCaptures += (currentState.getBoard().numberOfRedPieces()
+            //        - chosenState.getBoard().numberOfRedPieces());
+            blackCaptures = 12 - chosenState.getBoard().numberOfRedPieces();
         } else {
             redMoves++;
-            redCaptures += (currentState.getBoard().numberOfBlackPieces()
-                    - chosenState.getBoard().numberOfBlackPieces());
+            //redCaptures += (currentState.getBoard().numberOfBlackPieces()
+            //        - chosenState.getBoard().numberOfBlackPieces());
+            redCaptures = 12 - chosenState.getBoard().numberOfBlackPieces();
         }
         // Switch the current state to the chosen state, which makes it the OTHER PLAYER'S TURN
         this.currentState = chosenState;
