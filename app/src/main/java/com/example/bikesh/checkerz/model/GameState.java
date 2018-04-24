@@ -9,8 +9,12 @@ import java.lang.Math;
  */
 
 public class GameState {
+    private final int SEARCH_LIMIT = 10000;
+    /* Used by the bot to determine when to stop searching for a move
+     * Should not be modified by anything outside of this class */
+    private int childStates;
 
-    private final GameState previous;
+    private GameState previous;
     private final GameBoard board;
     private PieceColor currentColor;
     private boolean over;
@@ -20,6 +24,7 @@ public class GameState {
      * Constructor for creating the initial GameState.
      */
     public GameState(){
+        this.childStates = 0;
         this.previous = null;
         this.board = new GameBoard();
         this.over = false;
@@ -46,8 +51,15 @@ public class GameState {
          * state will be red. Since red hasn't had a chance to move yet (black
          * always goes first) the turn counter doesn't increment */
         this.turn = parent.currentColor == PieceColor.BLACK ? parent.turn : parent.turn + 1;
-        this.over = checkIfGameIsOver();
+        this.over = parent.isOver() || nextBoard.getBlackPieces().isEmpty() || nextBoard.getRedPieces().isEmpty();
         this.board = nextBoard;
+
+        //Increment the root ancestor each time a child state is made
+        GameState ancestor = this.previous;
+        while (ancestor.getPrevious() != null) {
+            ancestor = ancestor.getPrevious();
+        }
+        ancestor.incrementChildCounter();
     }
 
     /**
@@ -57,33 +69,101 @@ public class GameState {
      * @return the next legal states
      */
     public Iterable<GameState> next(){
-        //TODO: implement this method for the Bot to work
+        HashSet<GameState> everyPossibleState = new HashSet<>();
         /* Check the current color of this state to see whose turn it is
          * Iterate over the current color's pieces in this state's board
-         *      For each piece, get the available moves
-         *      Add all of the positions in that set of available moves to
-         *          one larger set of Total available moves.
-         * For each of the moves in Total available moves
-         *      Create a new state that would result from taking that move
-         *      Add that state to an Iterable of all possible next states */
-        return Collections.emptyList();
+         * For each piece, get the available moves
+         *      For each position in the set of available moves
+         *          Make that move on a new GameBoard
+         *          Create the child GameState using that board
+         *          Add it to the set of all possible next states */
+        if (this.currentColor == PieceColor.BLACK) {
+            for (Piece bPiece : this.board.getBlackPieces()) {
+                Position positionOfPiece = bPiece.getPosition();
+                HashSet<Position> availableMoves = this.board.getAvailableMoves(positionOfPiece);
+                if (!availableMoves.isEmpty()) {
+                    for (Position nextPosition : availableMoves) {
+                        GameBoard clone = this.board.cloneBoard();
+                        GameBoard nextBoard = clone.movePiece(positionOfPiece, nextPosition);
+                        // If a capture occurred
+                        if (Math.abs(nextPosition.getX() - positionOfPiece.getX()) == 2) {
+                            Position positionOfJumpedPiece = clone.getMid(positionOfPiece, nextPosition);
+                            int x = positionOfJumpedPiece.getX();
+                            int y = positionOfJumpedPiece.getY();
+                            Piece jumpedPiece = nextBoard.getGrid()[x][y].getPiece();
+                            jumpedPiece.setCaptured(true);
+                            nextBoard.removePiece(jumpedPiece);
+                        }
+                        GameState resultingState = new GameState(this, nextBoard);
+                        everyPossibleState.add(resultingState);
+                    }
+                }
+            }
+        } else {
+            for (Piece rPiece : this.board.getRedPieces()) {
+                Position positionOfPiece = rPiece.getPosition();
+                HashSet<Position> availableMoves = this.board.getAvailableMoves(positionOfPiece);
+                if (!availableMoves.isEmpty()) {
+                    for (Position nextPosition : availableMoves) {
+                        GameBoard clone = this.board.cloneBoard();
+                        GameBoard nextBoard = clone.movePiece(positionOfPiece, nextPosition);
+                        // If a capture occurred
+                        if (Math.abs(nextPosition.getX() - positionOfPiece.getX()) == 2) {
+                            Position positionOfJumpedPiece = clone.getMid(positionOfPiece, nextPosition);
+                            int x = positionOfJumpedPiece.getX();
+                            int y = positionOfJumpedPiece.getY();
+                            Piece jumpedPiece = nextBoard.getGrid()[x][y].getPiece();
+                            jumpedPiece.setCaptured(true);
+                            nextBoard.removePiece(jumpedPiece);
+                        }
+                        GameState resultingState = new GameState(this, nextBoard);
+                        everyPossibleState.add(resultingState);
+                    }
+                }
+            }
+        }
+        // If there are no possible next states, the game's state is OVER
+        if (everyPossibleState.isEmpty())
+            this.over = true;
+        return everyPossibleState;
     }
 
     /**
      * Returns a collection of all the possible next states that could result
-     * from the current player making one move for a given piece in this state.
+     * from the current player making one move for a piece at the given
+     * position in this state.
      *
-     * @param piece the piece to be moved
+     * @param consideredPiece the location of the piece to be moved
      * @return the next legal states in which the given piece has been moved
+     * OR an empty hashset
      */
-    public Iterable<GameState> next(Piece piece) {
-        //TODO: implement this method for the Bot to work
+    public Iterable<GameState> next(Piece consideredPiece) {
+        HashSet<GameState> possibleStates = new HashSet<>();
+        Position positionOfPiece = consideredPiece.getPosition();
+        HashSet<Position> availableMoves = board.getAvailableMoves(positionOfPiece);
         /* Get the available moves for the given piece
-         * For each of the available moves in that Set
-         *      Create a new state that would result from taking that move
-         *      Add that state to an Iterable of all possible next states
-         *          resulting from moving that piece */
-        return Collections.emptyList();
+         * For each position in the set of available moves
+         *      Make that move on a new GameBoard
+         *      Create the child GameState using that board
+         *      Add it to the set of possible next states */
+        if (!availableMoves.isEmpty()) {
+            for (Position nextPosition : availableMoves) {
+                GameBoard clone = this.board.cloneBoard();
+                GameBoard nextBoard = clone.movePiece(positionOfPiece, nextPosition);
+                // If the move was a jump (capture occurred)
+                if (Math.abs(nextPosition.getX() - positionOfPiece.getX()) == 2) {
+                    Position positionOfJumpedPiece = clone.getMid(positionOfPiece, nextPosition);
+                    int x = positionOfJumpedPiece.getX();
+                    int y = positionOfJumpedPiece.getY();
+                    Piece jumpedPiece = nextBoard.getGrid()[x][y].getPiece();
+                    jumpedPiece.setCaptured(true);
+                    nextBoard.removePiece(jumpedPiece);
+                }
+                GameState resultingState = new GameState(this, nextBoard);
+                possibleStates.add(resultingState);
+            }
+        }
+        return possibleStates;
     }
 
     /**
@@ -98,7 +178,6 @@ public class GameState {
     public GameState next(Piece selectedPiece, Position currentPosition, Position newPosition) throws IllegalArgumentException {
         GameBoard currentBoard = this.board;
 
-        //TODO: Uncomment once GameBoard.getAvailableMoves() is implemented
         if (this.currentColor != selectedPiece.color)
             throw new IllegalArgumentException("Selected piece's color and the color whose turn it is no not match");
         if (currentBoard.getGrid()[currentPosition.row][currentPosition.column].isEmpty())
@@ -107,34 +186,20 @@ public class GameState {
             throw new IllegalArgumentException("Cannot move a piece that does not match the color whose turn it is");
 
         HashSet<Position> availableMoves = currentBoard.getAvailableMoves(currentPosition);
-        if (!availableMoves.contains(newPosition)) {
-            //TODO: maybe handle this error another way
-            throw new IllegalArgumentException("Not an available move");
-        }
+
         if (Math.abs(newPosition.getX()-currentPosition.getX())!=2){
         GameBoard newBoard = currentBoard.movePiece(currentPosition, newPosition);
         GameState childState = new GameState(this, newBoard);
         return childState;}
         else{
-            Position midPosition = currentBoard.getMid(currentPosition, newPosition);
-            currentBoard.getGrid()[midPosition.getX()][midPosition.getY()].getPiece().isCaptured();
-            currentBoard.removePiece(currentBoard.getGrid()[midPosition.getX()][midPosition.getY()].getPiece());
-            currentBoard.getGrid()[midPosition.getX()][midPosition.getY()].setPiece(null);
             GameBoard newBoard = currentBoard.movePiece(currentPosition, newPosition);
+            Position midPosition = newBoard.getMid(currentPosition, newPosition);
+            newBoard.getGrid()[midPosition.getX()][midPosition.getY()].getPiece().isCaptured();
+            newBoard.removePiece(newBoard.getGrid()[midPosition.getX()][midPosition.getY()].getPiece());
+            newBoard.getGrid()[midPosition.getX()][midPosition.getY()].setPiece(null);
             GameState childState = new GameState(this, newBoard);
             return childState;
         }
-
-    }
-
-    /**
-     * Checks if the game is over based on the current state.
-     *
-     * @return true if the game is over, false otherwise
-     */
-    private boolean checkIfGameIsOver(){
-        //TODO: implement this method
-        return false;
     }
 
 
@@ -157,4 +222,22 @@ public class GameState {
     public int getTurn() {
         return turn;
     }
+
+    public void incrementChildCounter() {
+        this.childStates += 1;
+    }
+
+    public void clearChildCounter() {
+        this.childStates = 0;
+        this.previous = null;
+    }
+
+    public boolean searchLimitReached() {
+        GameState ancestor = this;
+        while (ancestor.getPrevious() != null) {
+            ancestor = ancestor.getPrevious();
+        }
+        return ancestor.childStates >= ancestor.SEARCH_LIMIT;
+    }
+
 }
