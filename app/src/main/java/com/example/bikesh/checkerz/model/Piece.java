@@ -9,9 +9,10 @@ public class Piece {
     private boolean king;
     private boolean captured;
     public PieceColor color;
+    private Position position;
 
-    public ArrayList<Position> neighbors  = new ArrayList<Position>();
-    public ArrayList<Position> moves  = new ArrayList<Position>();
+//    public ArrayList<Position> neighbors  = new ArrayList<Position>();
+//    public ArrayList<Position> moves  = new ArrayList<Position>();
 
     public Piece(PieceColor color){
         this.king = false;
@@ -33,5 +34,13 @@ public class Piece {
 
     public void setCaptured(boolean captured) {
         this.captured = captured;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position){
+        this.position = position;
     }
 }
