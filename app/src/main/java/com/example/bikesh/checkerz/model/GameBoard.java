@@ -27,6 +27,7 @@ public class GameBoard{
                     // If the sum of the indices is odd, the square gets a red piece
                     if ((i + j) % 2 == 1) {
                         Piece redPiece = new Piece(PieceColor.RED);
+                        redPiece.setPosition(new Position(i,j));
                         grid[i][j] = new Square( new Position(i,j), redPiece );
                         redPieces.add(redPiece);
                     } else { // The square does not get a piece
@@ -36,6 +37,7 @@ public class GameBoard{
                     // If the sum of the indices is odd, the square gets a black piece
                     if ((i + j) % 2 == 1) {
                         Piece blackPiece = new Piece(PieceColor.BLACK);
+                        blackPiece.setPosition(new Position(i,j));
                         grid[i][j] = new Square( new Position(i,j), blackPiece );
                         blackPieces.add(blackPiece);
                     } else { // The square does not get a piece
@@ -46,6 +48,42 @@ public class GameBoard{
                 }
             }
         }
+    }
+
+    private GameBoard(Square[][] squares, HashSet<Piece> reds, HashSet<Piece> blacks) {
+        this.grid = squares;
+        this.redPieces = reds;
+        this.blackPieces = blacks;
+    }
+
+    public GameBoard cloneBoard() {
+        Square[][] gridClone = new Square[8][8];
+        HashSet<Piece> reds = new HashSet<>();
+        HashSet<Piece> blacks = new HashSet<>();
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                Square squareToBeCopied = this.grid[i][j];
+                Square copiedSquare = null;
+                if (squareToBeCopied.isEmpty()){
+                    copiedSquare = new Square(squareToBeCopied.getPosition(), null);
+                } else {
+                    Piece pieceToBeCopied = squareToBeCopied.getPiece();
+                    Piece copiedPiece = new Piece(pieceToBeCopied.color);
+                    copiedPiece.setPosition(pieceToBeCopied.getPosition());
+                    copiedPiece.setCaptured(pieceToBeCopied.isCaptured());
+                    copiedPiece.setKing(pieceToBeCopied.isKing());
+                    copiedSquare = new Square(squareToBeCopied.getPosition(), copiedPiece);
+                    if (copiedPiece.color == PieceColor.BLACK)
+                        blacks.add(copiedPiece);
+                    else
+                        reds.add(copiedPiece);
+                }
+                gridClone[i][j] = copiedSquare;
+            }
+        }
+
+        return new GameBoard(gridClone, reds, blacks);
     }
 
     /**
@@ -76,6 +114,7 @@ public class GameBoard{
         // Move piece to new position
         if (!grid[nRow][nCol].isEmpty())
             throw new IllegalArgumentException("Already a piece at specified newPosition");
+        pieceToMove.setPosition(new Position(nRow, nCol));
         grid[nRow][nCol].setPiece(pieceToMove);
         return this;
     }
@@ -242,6 +281,7 @@ public class GameBoard{
                 }
 
                 if ((cRow-1 < 8) && (cCol+1 < 8)){
+                    //TODO: Fix ArrayIndexOutOfBoundsException here (length = 4, index = -1)
                     if (grid[cRow-1][cCol+1].isEmpty()) {
                         neighbors.add(grid[cRow - 1][cCol + 1].getPosition());
                     }
@@ -260,5 +300,13 @@ public class GameBoard{
             }
         }
         return neighbors;
+    }
+
+    public HashSet<Piece> getBlackPieces() {
+        return blackPieces;
+    }
+
+    public HashSet<Piece> getRedPieces() {
+        return redPieces;
     }
 }
