@@ -70,6 +70,8 @@ public class CheckersViewModel implements IViewModel {
         initializeTurnObservable();
         // Initialize the observable grid with the state of the Game's GameBoard
         syncGridAndAvailableMovesObservables();
+        updateBlackCapturesObservable(model.getBlackCaptures());
+        updateRedCapturesObservable(model.getRedCaptures());
 
         // TODO: If the black player is a bot, it should take its turn now
         IPlayer currentPlayer = model.getBlackPlayer();
@@ -82,19 +84,23 @@ public class CheckersViewModel implements IViewModel {
     }
 
     public void onRestartGameSelected() {
-        // Reset the state of the model
-        this.model.resetGame();
-        // Re-initialize the observables
-        initializeTurnObservable();
-        syncGridAndAvailableMovesObservables();
-
-        // TODO: If the black player is a bot, it should take its turn now
-        IPlayer currentPlayer = model.getBlackPlayer();
-        if (currentPlayer instanceof Bot) {
-            model.advanceTurn(currentPlayer.chooseMove(model.getCurrentState()));
+        if (this.model != null) {
+            // Reset the state of the model
+            this.model.resetGame();
+            // Re-initialize the observables
+            initializeTurnObservable();
             syncGridAndAvailableMovesObservables();
-            toggleTurnObservable();
             updateBlackCapturesObservable(model.getBlackCaptures());
+            updateRedCapturesObservable(model.getRedCaptures());
+
+            // TODO: If the black player is a bot, it should take its turn now
+            IPlayer currentPlayer = model.getBlackPlayer();
+            if (currentPlayer instanceof Bot) {
+                model.advanceTurn(currentPlayer.chooseMove(model.getCurrentState()));
+                syncGridAndAvailableMovesObservables();
+                toggleTurnObservable();
+                updateBlackCapturesObservable(model.getBlackCaptures());
+            }
         }
     }
 
