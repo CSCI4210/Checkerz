@@ -36,6 +36,7 @@ public class CheckersViewModel implements IViewModel {
     public final ObservableArrayMap<String, Integer> grid = new ObservableArrayMap<>();
     // Used to highlight the selected piece's available moves
     public final ObservableArrayMap<String, Boolean> availableMoves = new ObservableArrayMap<>();
+    public final ObservableArrayMap<String, Boolean> kingTracker = new ObservableArrayMap<>();
 
     public CheckersViewModel() {
     }
@@ -234,8 +235,13 @@ public class CheckersViewModel implements IViewModel {
                     } else {
                         this.grid.put("" + grid[i][j].getPosition().toString(), 2);
                     }
+                    // For the cells with pieces, add their king flag to the kingTracker
+                    this.kingTracker.put("" + grid[i][j].getPosition().toString(),
+                            grid[i][j].getPiece().isKing());
                 } else {
                     this.grid.put("" + grid[i][j].getPosition().toString(), 0);
+                    // For cells without pieces, their king flag needs to be cleared
+                    this.kingTracker.replace("" + grid[i][j].getPosition().toString(), false);
                 }
                 // For every iteration add the square to the Observable for Available Moves
                 this.availableMoves.put("" + grid[i][j].getPosition().toString(), false);
