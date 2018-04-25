@@ -114,8 +114,15 @@ public class GameBoard{
         // Move piece to new position
         if (!grid[nRow][nCol].isEmpty())
             throw new IllegalArgumentException("Already a piece at specified newPosition");
+
         pieceToMove.setPosition(new Position(nRow, nCol));
         grid[nRow][nCol].setPiece(pieceToMove);
+
+        // Handle King Crowning logic
+        if (pieceToMove.color == PieceColor.BLACK && nRow == 0)
+            pieceToMove.setKing(true);
+        if (pieceToMove.color == PieceColor.RED && nRow == 7)
+            pieceToMove.setKing(true);
         return this;
     }
 
