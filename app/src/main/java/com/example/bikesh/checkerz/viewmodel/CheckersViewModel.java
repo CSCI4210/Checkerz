@@ -280,6 +280,8 @@ public class CheckersViewModel implements IViewModel {
         for (Position position : availableMovePositions) {
             availableMoves.replace("" + position.toString(), true);
         }
+        // Also highlights the selected piece to give better click feedback to the user
+        availableMoves.replace("" + selectedSquare.getPosition().toString(), true);
     }
 
 }
