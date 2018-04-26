@@ -17,7 +17,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context="com.example.bikesh.checkerz.view.MainActivity">
+        tools:context="com.example.bikesh.checkerz.view.MainActivity"
+        android:foreground="@{viewModel.gameStarted ? @drawable/clear: @drawable/overlay}"
+       >
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
