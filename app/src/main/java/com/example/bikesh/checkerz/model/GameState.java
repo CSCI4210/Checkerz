@@ -3,13 +3,14 @@ package com.example.bikesh.checkerz.model;
 import java.util.Collections;
 import java.util.HashSet;
 import java.lang.Math;
+import java.util.Iterator;
 
 /**
  * Created by dhemard on 3/9/18.
  */
 
 public class GameState {
-    private final int SEARCH_LIMIT = 10000;
+    private final int SEARCH_LIMIT = 50000;
     /* Used by the bot to determine when to stop searching for a move
      * Should not be modified by anything outside of this class */
     private int childStates;
@@ -187,14 +188,13 @@ public class GameState {
         if (currentBoard.getGrid()[currentPosition.row][currentPosition.column].getPiece().color != this.currentColor)
             throw new IllegalArgumentException("Cannot move a piece that does not match the color whose turn it is");
 
-        HashSet<Position> availableMoves = currentBoard.getAvailableMoves(currentPosition);
-
         GameState childState;
+        GameBoard newBoard;
         if (Math.abs(newPosition.getX()-currentPosition.getX())!=2){
-            GameBoard newBoard = currentBoard.movePiece(currentPosition, newPosition);
+            newBoard = currentBoard.movePiece(currentPosition, newPosition);
             childState = new GameState(this, newBoard);
         } else{
-            GameBoard newBoard = currentBoard.movePiece(currentPosition, newPosition);
+            newBoard = currentBoard.movePiece(currentPosition, newPosition);
             Position midPosition = newBoard.getMid(currentPosition, newPosition);
             int x = midPosition.getX();
             int y = midPosition.getY();
@@ -208,7 +208,28 @@ public class GameState {
             if (jumpedPiece.color == PieceColor.RED && newBoard.getRedPieces().isEmpty())
                 childState.over = true;
         }
+        // As long as the opponent has at least one available move, the childState is not over
+        if(!childState.currentColorCanMove())
+            childState.over = true;
         return childState;
+    }
+
+    /**
+     * A method to determine if the color whose turn it is has any available moves
+     *
+     * @return true if the current color has at least 1 move available
+     */
+    public boolean currentColorCanMove(){
+        Iterator<Piece> pieceIterator = this.currentColor == PieceColor.BLACK ?
+                this.board.getBlackPieces().iterator() : this.board.getRedPieces().iterator();
+        boolean foundAvailableMove = false;
+        while (!foundAvailableMove && pieceIterator.hasNext()){
+            Piece piece = pieceIterator.next();
+            HashSet<Position> availableMoves = this.board.getAvailableMoves(piece.getPosition());
+            if (!availableMoves.isEmpty())
+                foundAvailableMove = true;
+        }
+        return foundAvailableMove;
     }
 
 

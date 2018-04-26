@@ -57,12 +57,13 @@ public class Game {
      * @return
      */
     private IPlayer determineWinner(){
-        //TODO: Double check this logic. What happens if draw?
-        if (redCaptures > blackCaptures)
-            return redPlayer;
-        if (blackCaptures > redCaptures)
-            return blackPlayer;
-        return new Human("Draw");
+        IPlayer winner = null;
+        // If the current color cannot move, the other color has won
+        if (!this.currentState.currentColorCanMove()) {
+            winner = this.currentState.getCurrentColor() == PieceColor.BLACK ?
+                    redPlayer : blackPlayer;
+        }
+        return winner;
     }
 
     /**
