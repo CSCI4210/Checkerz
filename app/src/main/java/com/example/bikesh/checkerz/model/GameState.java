@@ -10,7 +10,7 @@ import java.util.Iterator;
  */
 
 public class GameState {
-    private final int SEARCH_LIMIT = 50000;
+    private final int SEARCH_LIMIT = 10000;
     /* Used by the bot to determine when to stop searching for a move
      * Should not be modified by anything outside of this class */
     private int childStates;

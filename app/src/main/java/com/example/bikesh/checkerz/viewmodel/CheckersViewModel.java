@@ -159,86 +159,88 @@ public class CheckersViewModel implements IViewModel {
      * @param col the y coordinate of the clicked button
      */
     public void onCellClickedAt(int row, int col) {
-        PieceColor currentColor = model.getCurrentState().getCurrentColor();
-        IPlayer currentPlayer = currentColor == PieceColor.BLACK ?
-                model.getBlackPlayer() : model.getRedPlayer();
+        if (model != null) {
+            PieceColor currentColor = model.getCurrentState().getCurrentColor();
+            IPlayer currentPlayer = currentColor == PieceColor.BLACK ?
+                    model.getBlackPlayer() : model.getRedPlayer();
 
-        // If it isn't the humans turn, ignore the click (*So human won't mess with AI logic*)
-        if (currentPlayer instanceof Human) {
-            Human currentHuman = (Human) currentPlayer;
+            // If it isn't the humans turn, ignore the click (*So human won't mess with AI logic*)
+            if (currentPlayer instanceof Human) {
+                Human currentHuman = (Human) currentPlayer;
 
-            //Check if a move is in progress
-            if (currentHuman.getSelectedSquare() != null) {
-                Position clickedPosition = new Position(row, col);
-                Square selectedSquare = currentHuman.getSelectedSquare();
+                //Check if a move is in progress
+                if (currentHuman.getSelectedSquare() != null) {
+                    Position clickedPosition = new Position(row, col);
+                    Square selectedSquare = currentHuman.getSelectedSquare();
 
-                // If the clicked cell is one of the available moves, continue
-                if (model.getCurrentState().getBoard().getAvailableMoves(selectedSquare.getPosition()).contains(clickedPosition)) {
-                    GameState desiredState = null;
+                    // If the clicked cell is one of the available moves, continue
+                    if (model.getCurrentState().getBoard().getAvailableMoves(selectedSquare.getPosition()).contains(clickedPosition)) {
+                        GameState desiredState = null;
 
-                    //move the piece to the clicked cell in the model (after validating)
-                    desiredState = model.getCurrentState().next(
-                            selectedSquare.getPiece(),
-                            selectedSquare.getPosition(),
-                            clickedPosition
-                    );
-                    //Clear the availableMoves Observable
-                    //Update the observable with the new piece positions
-                    syncGridAndAvailableMovesObservables();
-                    //Clear the human's selectedSquare in model (maybe do AFTER updateGridObservable())
-                    currentHuman.setSelectedSquare(null);
-                    //Toggle the turn in the Observable
-                    toggleTurnObservable();
-                    //Go to the next turn in the model
-                    //** NOTE: CurrentState changes here *************************************//
-                    model.advanceTurn(currentHuman.chooseMove(desiredState));
-                    //Update the winner observable
-                    winner.set(model.getWinner());
-                    //Update the captures observable
-                    if (currentColor == PieceColor.BLACK)
-                        updateBlackCapturesObservable(model.getBlackCaptures());
-                    else
-                        updateRedCapturesObservable(model.getRedCaptures());
+                        //move the piece to the clicked cell in the model (after validating)
+                        desiredState = model.getCurrentState().next(
+                                selectedSquare.getPiece(),
+                                selectedSquare.getPosition(),
+                                clickedPosition
+                        );
+                        //Clear the availableMoves Observable
+                        //Update the observable with the new piece positions
+                        syncGridAndAvailableMovesObservables();
+                        //Clear the human's selectedSquare in model (maybe do AFTER updateGridObservable())
+                        currentHuman.setSelectedSquare(null);
+                        //Toggle the turn in the Observable
+                        toggleTurnObservable();
+                        //Go to the next turn in the model
+                        //** NOTE: CurrentState changes here *************************************//
+                        model.advanceTurn(currentHuman.chooseMove(desiredState));
+                        //Update the winner observable
+                        winner.set(model.getWinner());
+                        //Update the captures observable
+                        if (currentColor == PieceColor.BLACK)
+                            updateBlackCapturesObservable(model.getBlackCaptures());
+                        else
+                            updateRedCapturesObservable(model.getRedCaptures());
 
-                    // If there was a winner... GAME OVER
-                    if (model.getWinner() != null) {
-                        createGameOverAlert(activity);
-                    } else {
-                        // If other player is a bot it should take its turn now
-                        PieceColor nextColor = model.getCurrentState().getCurrentColor();
-                        IPlayer nextPlayer = nextColor == PieceColor.BLACK ?
-                                model.getBlackPlayer() : model.getRedPlayer();
-                        if (nextPlayer instanceof Bot) {
-                            GameState chosenMove = nextPlayer.chooseMove(model.getCurrentState());
-                            model.advanceTurn(chosenMove);
-                            syncGridAndAvailableMovesObservables();
-                            toggleTurnObservable();
-                            if (nextColor == PieceColor.BLACK)
-                                updateBlackCapturesObservable(model.getBlackCaptures());
-                            else
-                                updateRedCapturesObservable(model.getRedCaptures());
-                            winner.set(model.getWinner());
-                            // If there was a winner... GAME OVER
-                            if (model.getWinner() != null) {
-                                createGameOverAlert(activity);
+                        // If there was a winner... GAME OVER
+                        if (model.getWinner() != null) {
+                            createGameOverAlert(activity);
+                        } else {
+                            // If other player is a bot it should take its turn now
+                            PieceColor nextColor = model.getCurrentState().getCurrentColor();
+                            IPlayer nextPlayer = nextColor == PieceColor.BLACK ?
+                                    model.getBlackPlayer() : model.getRedPlayer();
+                            if (nextPlayer instanceof Bot) {
+                                GameState chosenMove = nextPlayer.chooseMove(model.getCurrentState());
+                                model.advanceTurn(chosenMove);
+                                syncGridAndAvailableMovesObservables();
+                                toggleTurnObservable();
+                                if (nextColor == PieceColor.BLACK)
+                                    updateBlackCapturesObservable(model.getBlackCaptures());
+                                else
+                                    updateRedCapturesObservable(model.getRedCaptures());
+                                winner.set(model.getWinner());
+                                // If there was a winner... GAME OVER
+                                if (model.getWinner() != null) {
+                                    createGameOverAlert(activity);
+                                }
                             }
                         }
+                    } else if (selectedSquare.getPosition().equals(clickedPosition)) {
+                        // If the player clicks on their selected piece, the piece is unselected and
+                        // they are able to select another piece to move
+                        clearAvailableMovesObservable();
+                        currentHuman.setSelectedSquare(null);
                     }
-                } else if (selectedSquare.getPosition().equals(clickedPosition)) {
-                    // If the player clicks on their selected piece, the piece is unselected and
-                    // they are able to select another piece to move
-                    clearAvailableMovesObservable();
-                    currentHuman.setSelectedSquare(null);
-                }
-            } else {
-                //Check if the cell has a Piece and is correct color
-                Square selected = model.getCurrentState().getBoard().getGrid()[row][col];
-                if (!selected.isEmpty() &&
-                        selected.getPiece().color == model.getCurrentState().getCurrentColor()) {
-                    //'select' the piece in the model
-                    currentHuman.setSelectedSquare(selected);
-                    //then highlight the available moves in the observable
-                    updateAvailableMovesObservable(currentHuman);
+                } else {
+                    //Check if the cell has a Piece and is correct color
+                    Square selected = model.getCurrentState().getBoard().getGrid()[row][col];
+                    if (!selected.isEmpty() &&
+                            selected.getPiece().color == model.getCurrentState().getCurrentColor()) {
+                        //'select' the piece in the model
+                        currentHuman.setSelectedSquare(selected);
+                        //then highlight the available moves in the observable
+                        updateAvailableMovesObservable(currentHuman);
+                    }
                 }
             }
         }
