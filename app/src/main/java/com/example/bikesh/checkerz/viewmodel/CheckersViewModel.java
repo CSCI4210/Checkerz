@@ -5,6 +5,7 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 
+import com.example.bikesh.checkerz.model.Bot;
 import com.example.bikesh.checkerz.model.Game;
 import com.example.bikesh.checkerz.model.GameState;
 import com.example.bikesh.checkerz.model.Human;
@@ -35,6 +36,7 @@ public class CheckersViewModel implements IViewModel {
     public final ObservableArrayMap<String, Integer> grid = new ObservableArrayMap<>();
     // Used to highlight the selected piece's available moves
     public final ObservableArrayMap<String, Boolean> availableMoves = new ObservableArrayMap<>();
+    public final ObservableArrayMap<String, Boolean> kingTracker = new ObservableArrayMap<>();
 
     public CheckersViewModel() {
     }
@@ -67,19 +69,39 @@ public class CheckersViewModel implements IViewModel {
         //Set the observables with data from the model
         initializeTurnObservable();
         // Initialize the observable grid with the state of the Game's GameBoard
-        initializeGridAndAvailableMovesObservables();
+        syncGridAndAvailableMovesObservables();
+        updateBlackCapturesObservable(model.getBlackCaptures());
+        updateRedCapturesObservable(model.getRedCaptures());
 
         // TODO: If the black player is a bot, it should take its turn now
+        IPlayer currentPlayer = model.getBlackPlayer();
+        if (currentPlayer instanceof Bot) {
+            model.advanceTurn(currentPlayer.chooseMove(model.getCurrentState()));
+            syncGridAndAvailableMovesObservables();
+            toggleTurnObservable();
+            updateBlackCapturesObservable(model.getBlackCaptures());
+        }
     }
 
     public void onRestartGameSelected() {
-        // Reset the state of the model
-        this.model.resetGame();
-        // Re-initialize the observables
-        initializeTurnObservable();
-        initializeGridAndAvailableMovesObservables();
+        if (this.model != null) {
+            // Reset the state of the model
+            this.model.resetGame();
+            // Re-initialize the observables
+            initializeTurnObservable();
+            syncGridAndAvailableMovesObservables();
+            updateBlackCapturesObservable(model.getBlackCaptures());
+            updateRedCapturesObservable(model.getRedCaptures());
 
-        // TODO: If the black player is a bot, it should take its turn now
+            // TODO: If the black player is a bot, it should take its turn now
+            IPlayer currentPlayer = model.getBlackPlayer();
+            if (currentPlayer instanceof Bot) {
+                model.advanceTurn(currentPlayer.chooseMove(model.getCurrentState()));
+                syncGridAndAvailableMovesObservables();
+                toggleTurnObservable();
+                updateBlackCapturesObservable(model.getBlackCaptures());
+            }
+        }
     }
 
     /**
@@ -100,56 +122,67 @@ public class CheckersViewModel implements IViewModel {
         // If it isn't the humans turn, ignore the click (*So human won't mess with AI logic*)
         if (currentPlayer instanceof Human) {
             Human currentHuman = (Human) currentPlayer;
+
             //Check if a move is in progress
             if (currentHuman.getSelectedSquare() != null) {
-                //move the piece to the clicked cell in the model (after validating)
                 Position clickedPosition = new Position(row, col);
                 Square selectedSquare = currentHuman.getSelectedSquare();
-                GameState desiredState = null;
-                //TODO: Add some checking where if clickedPosition.equals(selectedSquare.getPosition()) the square is unselected
-                /*while (desiredState == null) {
-                    try {
-                        desiredState = model.getCurrentState().next(
-                                selectedSquare.getPiece(),
-                                selectedSquare.getPosition(),
-                                clickedPosition
-                        );
-                    } catch (IllegalArgumentException e) {
-                        // TODO: Popup toast saying to choose again? Need to rework this Exception handling
-                        *//* Debug where the thread will continue *//*
-                        currentHuman.setSelectedSquare(null);
-                        clearAvailableMovesObservable();
-                    }
-                }*/
-                desiredState = model.getCurrentState().next(
-                        selectedSquare.getPiece(),
-                        selectedSquare.getPosition(),
-                        clickedPosition
-                );
-                //Clear the availableMoves Observable
-                clearAvailableMovesObservable();
-                //Update the observable with the new piece positions
-                boolean resultOfGridObservableUpdate = updateGridObservable(
-                        selectedSquare.getPosition(),
-                        clickedPosition,
-                        currentColor);
 
-                initializeGridAndAvailableMovesObservables();
-                //Clear the human's selectedSquare in model (maybe do AFTER updateGridObservable())
-                currentHuman.setSelectedSquare(null);
-                //Toggle the turn in the Observable
-                toggleTurnObservable();
-                //Go to the next turn in the model
-                //** NOTE: CurrentState changes here *************************************//
-                model.advanceTurn(currentHuman.chooseMove(desiredState));
-                //Update the winner observable
-                winner.set(model.getWinner());
-                //Update the captures observable
-                if (currentColor == PieceColor.BLACK)
-                    updateBlackCapturesObservable(model.getBlackCaptures());
-                else
-                    updateRedCapturesObservable(model.getRedCaptures());
-                //TODO: If other player is a bot it should take its turn now
+                // If the clicked cell is one of the available moves, continue
+                if (model.getCurrentState().getBoard().getAvailableMoves(selectedSquare.getPosition()).contains(clickedPosition)) {
+                    GameState desiredState = null;
+
+                    //move the piece to the clicked cell in the model (after validating)
+                    desiredState = model.getCurrentState().next(
+                            selectedSquare.getPiece(),
+                            selectedSquare.getPosition(),
+                            clickedPosition
+                    );
+                    //Clear the availableMoves Observable
+                    clearAvailableMovesObservable();
+                    //Update the observable with the new piece positions
+
+              /*      boolean resultOfGridObservableUpdate = updateGridObservable(
+                            selectedSquare.getPosition(),
+                            clickedPosition,
+                            currentColor);*/
+
+                    syncGridAndAvailableMovesObservables();
+                    //Clear the human's selectedSquare in model (maybe do AFTER updateGridObservable())
+                    currentHuman.setSelectedSquare(null);
+                    //Toggle the turn in the Observable
+                    toggleTurnObservable();
+                    //Go to the next turn in the model
+                    //** NOTE: CurrentState changes here *************************************//
+                    model.advanceTurn(currentHuman.chooseMove(desiredState));
+                    //Update the winner observable
+                    winner.set(model.getWinner());
+                    //Update the captures observable
+                    if (currentColor == PieceColor.BLACK)
+                        updateBlackCapturesObservable(model.getBlackCaptures());
+                    else
+                        updateRedCapturesObservable(model.getRedCaptures());
+
+                    //TODO: If other player is a bot it should take its turn now
+                    PieceColor nextColor = model.getCurrentState().getCurrentColor();
+                    IPlayer nextPlayer = nextColor == PieceColor.BLACK ?
+                            model.getBlackPlayer() : model.getRedPlayer();
+                    if (nextPlayer instanceof Bot) {
+                        GameState chosenMove = nextPlayer.chooseMove(model.getCurrentState());
+                        model.advanceTurn(chosenMove);
+                        syncGridAndAvailableMovesObservables();
+                        toggleTurnObservable();
+                        if (nextColor == PieceColor.BLACK)
+                            updateBlackCapturesObservable(model.getBlackCaptures());
+                        else
+                            updateRedCapturesObservable(model.getRedCaptures());
+                    }
+                } else if (selectedSquare.getPosition().equals(clickedPosition)) {
+                    // If the player clicks on their selected piece, the piece is unselected and
+                    // they are able to select another piece to move
+                    clearAvailableMovesObservable();
+                    currentHuman.setSelectedSquare(null);
+                }
             } else {
                 //Check if the cell has a Piece and is correct color
                 Square selected = model.getCurrentState().getBoard().getGrid()[row][col];
@@ -197,27 +230,32 @@ public class CheckersViewModel implements IViewModel {
         redCaptures.set(numberOfCaptures);
     }
 
-    private void initializeGridAndAvailableMovesObservables() {
+    private void syncGridAndAvailableMovesObservables() {
         //TODO: Investigate if this overwrites the stuff already in grid. If not will need to clear both grid and available moves so that restartGameSelected() works
-        Square[][] initialGrid = model.getCurrentState().getBoard().getGrid();
-        for (int i = 0; i < initialGrid.length; i++) {
-            for (int j = 0; j < initialGrid[i].length; j++) {
-                if (!initialGrid[i][j].isEmpty()) {
-                    if (initialGrid[i][j].getPiece().color == PieceColor.BLACK){
-                        this.grid.put("" + initialGrid[i][j].getPosition().toString(), 1);
+        Square[][] grid = model.getCurrentState().getBoard().getGrid();
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (!grid[i][j].isEmpty()) {
+                    if (grid[i][j].getPiece().color == PieceColor.BLACK){
+                        this.grid.put("" + grid[i][j].getPosition().toString(), 1);
                     } else {
-                        this.grid.put("" + initialGrid[i][j].getPosition().toString(), 2);
+                        this.grid.put("" + grid[i][j].getPosition().toString(), 2);
                     }
+                    // For the cells with pieces, add their king flag to the kingTracker
+                    this.kingTracker.put("" + grid[i][j].getPosition().toString(),
+                            grid[i][j].getPiece().isKing());
                 } else {
-                    this.grid.put("" + initialGrid[i][j].getPosition().toString(), 0);
+                    this.grid.put("" + grid[i][j].getPosition().toString(), 0);
+                    // For cells without pieces, their king flag needs to be cleared
+                    this.kingTracker.replace("" + grid[i][j].getPosition().toString(), false);
                 }
                 // For every iteration add the square to the Observable for Available Moves
-                this.availableMoves.put("" + initialGrid[i][j].getPosition().toString(), false);
+                this.availableMoves.put("" + grid[i][j].getPosition().toString(), false);
             }
         }
     }
 
-    private boolean updateGridObservable(
+    /*private boolean updateGridObservable(
             Position pieceMovedFrom, Position pieceMovedTo, PieceColor color) {
 
         boolean updateSucceeded = false;
@@ -232,7 +270,7 @@ public class CheckersViewModel implements IViewModel {
             updateSucceeded = true;
 
         return  updateSucceeded;
-    }
+    }*/
 
     private void clearAvailableMovesObservable() {
         for (int i = 0; i < model.getCurrentState().getBoard().getGrid().length; i++) {
@@ -248,6 +286,8 @@ public class CheckersViewModel implements IViewModel {
         for (Position position : availableMovePositions) {
             availableMoves.replace("" + position.toString(), true);
         }
+        // Also highlights the selected piece to give better click feedback to the user
+        availableMoves.replace("" + selectedSquare.getPosition().toString(), true);
     }
 
 }

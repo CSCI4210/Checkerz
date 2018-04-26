@@ -27,30 +27,7 @@ public class Game {
         this.redCaptures = 0;
         this.currentState = new GameState();
     }
-
-    // TODO: Change this method. This would be useful if two Bots were playing against each other. We need something more event driven.
- /*   public void play(){
-        this.currentState = new GameState();
-        GameState chosenState;
-        *//* While loop that handles one turn in the game.
-         * While the game is not over: The current player will choose a move
-         * from one of the child states of the currentState. That player's
-         * move counter should then be incremented. Last, check if there is a
-         * winner or if the game is a draw.
-         *//*
-        while(!currentState.isOver()){
-            if(currentState.getCurrentColor() == PieceColor.BLACK){
-                chosenState = blackPlayer.chooseMove(currentState);
-                blackMoves += 1;
-            } else {
-                chosenState = redPlayer.chooseMove(currentState);
-                redMoves += 1;
-            }
-            this.currentState = chosenState;
-        }
-        this.winner = determineWinner();
-    }
-*/
+    
     public void advanceTurn(GameState chosenState) {
         if (currentState.getCurrentColor() == PieceColor.BLACK) {
             blackMoves++;
@@ -63,9 +40,13 @@ public class Game {
             //        - chosenState.getBoard().numberOfBlackPieces());
             redCaptures = 12 - chosenState.getBoard().numberOfBlackPieces();
         }
+
         // Switch the current state to the chosen state, which makes it the OTHER PLAYER'S TURN
         this.currentState = chosenState;
-        if (currentState.isOver()) {
+        // Reset the child state counter so the bot can select again next time
+        this.currentState.clearChildCounter();
+        // TODO: If there are performance issues may have to remove this state's previous state
+        if (chosenState.isOver()) {
             this.winner = determineWinner();
         }
     }
@@ -76,8 +57,12 @@ public class Game {
      * @return
      */
     private IPlayer determineWinner(){
-        //TODO: implement this method. Currently returns null
-        return null;
+        //TODO: Double check this logic. What happens if draw?
+        if (redCaptures > blackCaptures)
+            return redPlayer;
+        if (blackCaptures > redCaptures)
+            return blackPlayer;
+        return new Human("Draw");
     }
 
     /**

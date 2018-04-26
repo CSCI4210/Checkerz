@@ -27,6 +27,7 @@ public class GameBoard{
                     // If the sum of the indices is odd, the square gets a red piece
                     if ((i + j) % 2 == 1) {
                         Piece redPiece = new Piece(PieceColor.RED);
+                        redPiece.setPosition(new Position(i,j));
                         grid[i][j] = new Square( new Position(i,j), redPiece );
                         redPieces.add(redPiece);
                     } else { // The square does not get a piece
@@ -36,6 +37,7 @@ public class GameBoard{
                     // If the sum of the indices is odd, the square gets a black piece
                     if ((i + j) % 2 == 1) {
                         Piece blackPiece = new Piece(PieceColor.BLACK);
+                        blackPiece.setPosition(new Position(i,j));
                         grid[i][j] = new Square( new Position(i,j), blackPiece );
                         blackPieces.add(blackPiece);
                     } else { // The square does not get a piece
@@ -48,6 +50,42 @@ public class GameBoard{
         }
     }
 
+    private GameBoard(Square[][] squares, HashSet<Piece> reds, HashSet<Piece> blacks) {
+        this.grid = squares;
+        this.redPieces = reds;
+        this.blackPieces = blacks;
+    }
+
+    public GameBoard cloneBoard() {
+        Square[][] gridClone = new Square[8][8];
+        HashSet<Piece> reds = new HashSet<>();
+        HashSet<Piece> blacks = new HashSet<>();
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                Square squareToBeCopied = this.grid[i][j];
+                Square copiedSquare = null;
+                if (squareToBeCopied.isEmpty()){
+                    copiedSquare = new Square(squareToBeCopied.getPosition(), null);
+                } else {
+                    Piece pieceToBeCopied = squareToBeCopied.getPiece();
+                    Piece copiedPiece = new Piece(pieceToBeCopied.color);
+                    copiedPiece.setPosition(pieceToBeCopied.getPosition());
+                    copiedPiece.setCaptured(pieceToBeCopied.isCaptured());
+                    copiedPiece.setKing(pieceToBeCopied.isKing());
+                    copiedSquare = new Square(squareToBeCopied.getPosition(), copiedPiece);
+                    if (copiedPiece.color == PieceColor.BLACK)
+                        blacks.add(copiedPiece);
+                    else
+                        reds.add(copiedPiece);
+                }
+                gridClone[i][j] = copiedSquare;
+            }
+        }
+
+        return new GameBoard(gridClone, reds, blacks);
+    }
+
     /**
      * Moves a piece currently at one position to a different position as the
      * result of a Valid move. There must be a piece at that current position
@@ -55,27 +93,36 @@ public class GameBoard{
      * @param currentPosition the row and column of the piece to be moved
      * @param newPosition the row and column of the desired new position
      * @return a GameBoard where the piece is located at its new position
+     * @throws IllegalArgumentException
      */
-    public GameBoard movePiece (Position currentPosition, Position newPosition) {
+    public GameBoard movePiece (Position currentPosition, Position newPosition)
+            throws IllegalArgumentException {
         int cRow = currentPosition.row;
         int cCol = currentPosition.column;
         int nRow = newPosition.row;
         int nCol = newPosition.column;
-        /* Move validation should be handled in the CALLER or method will
-         *  return null! */
+        /* Most of the move validation should be handled in the CALLER */
 
         // Get piece at current position
         Piece pieceToMove = grid[cRow][cCol].getPiece();
         if(pieceToMove == null)
-            return null;
+            throw new IllegalArgumentException("No piece exists at specified currentPosition");
 
         // Remove piece from current position
         grid[cRow][cCol].setPiece(null);
 
         // Move piece to new position
         if (!grid[nRow][nCol].isEmpty())
-            return null;
+            throw new IllegalArgumentException("Already a piece at specified newPosition");
+
+        pieceToMove.setPosition(new Position(nRow, nCol));
         grid[nRow][nCol].setPiece(pieceToMove);
+
+        // Handle King Crowning logic
+        if (pieceToMove.color == PieceColor.BLACK && nRow == 0)
+            pieceToMove.setKing(true);
+        if (pieceToMove.color == PieceColor.RED && nRow == 7)
+            pieceToMove.setKing(true);
         return this;
     }
 
@@ -94,8 +141,8 @@ public class GameBoard{
 
         if (x.color == PieceColor.RED) {
             redPieces.remove(x);
-            String s = Integer.toString(redPieces.size());
-            Log.d("ready", s);
+//            String s = Integer.toString(redPieces.size());
+//            Log.d("ready", s);
         }
         else {
             blackPieces.remove(x);
@@ -241,6 +288,7 @@ public class GameBoard{
                 }
 
                 if ((cRow-1 < 8) && (cCol+1 < 8)){
+                    //TODO: Fix ArrayIndexOutOfBoundsException here (length = 4, index = -1)
                     if (grid[cRow-1][cCol+1].isEmpty()) {
                         neighbors.add(grid[cRow - 1][cCol + 1].getPosition());
                     }
@@ -259,5 +307,13 @@ public class GameBoard{
             }
         }
         return neighbors;
+    }
+
+    public HashSet<Piece> getBlackPieces() {
+        return blackPieces;
+    }
+
+    public HashSet<Piece> getRedPieces() {
+        return redPieces;
     }
 }
