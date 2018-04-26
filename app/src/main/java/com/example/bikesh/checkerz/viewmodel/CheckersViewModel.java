@@ -75,7 +75,7 @@ public class CheckersViewModel implements IViewModel {
     //Implement actions callable by the view that will update both
     // the Model and the Observables
 
-    public void onNewGameSelected() {
+    public void onNewHumanGameSelected() {
         this.gameStarted.set(true);
         this.model = new Game(new Human("Black"), new Human("Red"));
         //Set the observables with data from the model
@@ -84,15 +84,26 @@ public class CheckersViewModel implements IViewModel {
         syncGridAndAvailableMovesObservables();
         updateBlackCapturesObservable(model.getBlackCaptures());
         updateRedCapturesObservable(model.getRedCaptures());
+    }
+
+    public void onNewBotGameSelected() {
+        this.gameStarted.set(true);
+        this.model = new Game(new Human("You"), new Bot());
+        //Set the observables with data from the model
+        initializeTurnObservable();
+        // Initialize the observable grid with the state of the Game's GameBoard
+        syncGridAndAvailableMovesObservables();
+        updateBlackCapturesObservable(model.getBlackCaptures());
+        updateRedCapturesObservable(model.getRedCaptures());
 
         // If the black player is a bot, it should take its turn now
-        IPlayer currentPlayer = model.getBlackPlayer();
+    /*    IPlayer currentPlayer = model.getBlackPlayer();
         if (currentPlayer instanceof Bot) {
             model.advanceTurn(currentPlayer.chooseMove(model.getCurrentState()));
             syncGridAndAvailableMovesObservables();
             toggleTurnObservable();
             updateBlackCapturesObservable(model.getBlackCaptures());
-        }
+        }*/
     }
 
     public void onRestartGameSelected() {
@@ -114,13 +125,13 @@ public class CheckersViewModel implements IViewModel {
             updateRedCapturesObservable(model.getRedCaptures());
 
             // If the black player is a bot, it should take its turn now
-            IPlayer currentPlayer = model.getBlackPlayer();
+        /*    IPlayer currentPlayer = model.getBlackPlayer();
             if (currentPlayer instanceof Bot) {
                 model.advanceTurn(currentPlayer.chooseMove(model.getCurrentState()));
                 syncGridAndAvailableMovesObservables();
                 toggleTurnObservable();
                 updateBlackCapturesObservable(model.getBlackCaptures());
-            }
+            }*/
         }
     }
 
@@ -318,7 +329,7 @@ public class CheckersViewModel implements IViewModel {
         // 2. Chain together various setter methods to set the dialog characteristics
 /*        builder.setMessage("" + model.getWinner().toString() + " wins!")
                 .setTitle("Game Over");*/
-        builder.setMessage("" + model.getWinner().toString() + " wins!")
+        builder.setMessage("" + model.getWinner().toString() + " won!")
                 .setTitle("Game Over");
         // Add the buttons
         builder.setNegativeButton("Play Again", new DialogInterface.OnClickListener() {
