@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         //Binds the "viewModel" variable declared in activity_main.xml to this.viewModel
         binding.setViewModel(viewModel);
-        viewModel.onCreate();
+        viewModel.onCreate(this);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             viewModel.onRestartGameSelected();
             return true;
         } else if (item.getItemId() == R.id.item_about){
-            // Produce popup explaining instructions or whatever
+            // Have Instructions
             return true;
         } else
             return super.onOptionsItemSelected(item);

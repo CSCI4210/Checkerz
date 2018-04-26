@@ -41,8 +41,6 @@ public class Human implements IPlayer {
 
     @Override
     public String toString() {
-        return "Human{" +
-                "name='" + name + '\'' +
-                '}';
+        return this.name.toUpperCase();
     }
 }

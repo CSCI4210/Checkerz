@@ -163,6 +163,8 @@ public class GameState {
                 possibleStates.add(resultingState);
             }
         }
+        if (possibleStates.isEmpty())
+            this.over = true;
         return possibleStates;
     }
 
@@ -187,19 +189,26 @@ public class GameState {
 
         HashSet<Position> availableMoves = currentBoard.getAvailableMoves(currentPosition);
 
+        GameState childState;
         if (Math.abs(newPosition.getX()-currentPosition.getX())!=2){
-        GameBoard newBoard = currentBoard.movePiece(currentPosition, newPosition);
-        GameState childState = new GameState(this, newBoard);
-        return childState;}
-        else{
+            GameBoard newBoard = currentBoard.movePiece(currentPosition, newPosition);
+            childState = new GameState(this, newBoard);
+        } else{
             GameBoard newBoard = currentBoard.movePiece(currentPosition, newPosition);
             Position midPosition = newBoard.getMid(currentPosition, newPosition);
-            newBoard.getGrid()[midPosition.getX()][midPosition.getY()].getPiece().isCaptured();
-            newBoard.removePiece(newBoard.getGrid()[midPosition.getX()][midPosition.getY()].getPiece());
-            newBoard.getGrid()[midPosition.getX()][midPosition.getY()].setPiece(null);
-            GameState childState = new GameState(this, newBoard);
-            return childState;
+            int x = midPosition.getX();
+            int y = midPosition.getY();
+            Piece jumpedPiece = newBoard.getGrid()[x][y].getPiece();
+            jumpedPiece.setCaptured(true);
+            newBoard.removePiece(jumpedPiece);
+            childState = new GameState(this, newBoard);
+            // If the opponents last piece was captured, the game is over
+            if (jumpedPiece.color == PieceColor.BLACK && newBoard.getBlackPieces().isEmpty())
+                childState.over = true;
+            if (jumpedPiece.color == PieceColor.RED && newBoard.getRedPieces().isEmpty())
+                childState.over = true;
         }
+        return childState;
     }
 
 
