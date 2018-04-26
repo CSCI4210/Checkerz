@@ -166,7 +166,6 @@ public class GameBoard{
      * @return A collection of Positions representing the locations this piece could move
      */
     public HashSet<Position> getAvailableMoves (Position positionOfPiece) {
-        //TODO: Implement this method. Will be used to display available moves in the View
         int cRow = positionOfPiece.row;
         int cCol = positionOfPiece.column;
         Piece pieceToMove = grid[cRow][cCol].getPiece();
@@ -220,7 +219,7 @@ public class GameBoard{
                 }
             }
 
-            
+
             if ((cRow-1 > -1) && (cCol+1 < 8)){
                 if (grid[cRow-1][cCol+1].isEmpty()) {
                     neighbors.add(grid[cRow - 1][cCol + 1].getPosition());
@@ -288,8 +287,7 @@ public class GameBoard{
                     }
                 }
 
-                if ((cRow-1 < 8) && (cCol+1 < 8)){
-                    //TODO: Fix ArrayIndexOutOfBoundsException here (length = 4, index = -1)
+                if ((cRow-1 > -1) && (cCol+1 < 8)){
                     if (grid[cRow-1][cCol+1].isEmpty()) {
                         neighbors.add(grid[cRow - 1][cCol + 1].getPosition());
                     }

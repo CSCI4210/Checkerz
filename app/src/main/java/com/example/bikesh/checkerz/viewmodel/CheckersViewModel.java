@@ -37,6 +37,8 @@ public class CheckersViewModel implements IViewModel {
     // Used to highlight the selected piece's available moves
     public final ObservableArrayMap<String, Boolean> availableMoves = new ObservableArrayMap<>();
     public final ObservableArrayMap<String, Boolean> kingTracker = new ObservableArrayMap<>();
+    public final ObservableBoolean gameStarted = new ObservableBoolean();
+
 
     public CheckersViewModel() {
     }
@@ -65,6 +67,7 @@ public class CheckersViewModel implements IViewModel {
     // the Model and the Observables
 
     public void onNewGameSelected() {
+        this.gameStarted.set(true);
         this.model = new Game(new Human("Bill"), new Human("Ted"));
         //Set the observables with data from the model
         initializeTurnObservable();
@@ -84,6 +87,7 @@ public class CheckersViewModel implements IViewModel {
     }
 
     public void onRestartGameSelected() {
+        this.gameStarted.set(true);
         if (this.model != null) {
             // Reset the state of the model
             this.model.resetGame();
