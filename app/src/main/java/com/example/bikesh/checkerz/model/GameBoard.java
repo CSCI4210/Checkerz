@@ -220,7 +220,7 @@ public class GameBoard{
                 }
             }
 
-            if ((cRow-1 < 8) && (cCol+1 < 8)){
+            if ((cRow-1 > -1) && (cCol+1 < 8)){
                 if (grid[cRow-1][cCol+1].isEmpty()) {
                     neighbors.add(grid[cRow - 1][cCol + 1].getPosition());
                 }
