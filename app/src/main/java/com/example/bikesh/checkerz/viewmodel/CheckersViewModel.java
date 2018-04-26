@@ -100,6 +100,13 @@ public class CheckersViewModel implements IViewModel {
             this.gameStarted.set(true);
             // Reset the state of the model
             this.model.resetGame();
+            IPlayer red = this.model.getRedPlayer();
+            IPlayer black = this.model.getBlackPlayer();
+            if (red instanceof Human)
+                ((Human) red).setSelectedSquare(null);
+            if (black instanceof Human)
+                ((Human) black).setSelectedSquare(null);
+
             // Re-initialize the observables
             initializeTurnObservable();
             syncGridAndAvailableMovesObservables();
