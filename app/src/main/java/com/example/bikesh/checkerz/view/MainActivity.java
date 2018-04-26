@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         //Binds the "viewModel" variable declared in activity_main.xml to this.viewModel
         binding.setViewModel(viewModel);
-        viewModel.onCreate();
+        viewModel.onCreate(this);
     }
 
     @Override
@@ -52,14 +52,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.item_new_game) {
-            viewModel.onNewGameSelected();
+        if(item.getItemId() == R.id.item_new_human_game) {
+            viewModel.onNewHumanGameSelected();
+            return true;
+        } else if (item.getItemId() == R.id.item_new_bot_game) {
+            viewModel.onNewBotGameSelected();
             return true;
         } else if (item.getItemId() == R.id.item_restart_game) {
             viewModel.onRestartGameSelected();
             return true;
         } else if (item.getItemId() == R.id.item_about){
-            // Produce popup explaining instructions or whatever
+            // Have Instructions Shown
             return true;
         } else
             return super.onOptionsItemSelected(item);

@@ -3,9 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/item_new_game"
+        android:id="@+id/item_new_human_game"
         android:enabled="true"
-        android:title="New Game"
+        android:title="Play Against a Friend"
+        android:visible="true" />
+    <item
+        android:id="@+id/item_new_bot_game"
+        android:enabled="true"
+        android:title="Play Against the Bot"
         android:visible="true" />
     <item
         android:id="@+id/item_restart_game"

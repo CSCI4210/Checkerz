@@ -1,10 +1,17 @@
 package com.example.bikesh.checkerz.viewmodel;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.databinding.ObservableArrayMap;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
+import com.example.bikesh.checkerz.R;
 import com.example.bikesh.checkerz.model.Bot;
 import com.example.bikesh.checkerz.model.Game;
 import com.example.bikesh.checkerz.model.GameState;
@@ -25,6 +32,7 @@ import java.util.HashSet;
  */
 public class CheckersViewModel implements IViewModel {
 
+    private AppCompatActivity activity;
     private Game model;
 
     // The View updates itself when changes are made to these objects. The View 'observes' them
@@ -47,7 +55,8 @@ public class CheckersViewModel implements IViewModel {
     //Overridden lifecycle methods used in case something needs to be done to the
     // model during these events
     @Override
-    public void onCreate() {
+    public void onCreate(AppCompatActivity appCompatActivity) {
+        this.activity = appCompatActivity;
     }
 
     @Override
@@ -66,9 +75,20 @@ public class CheckersViewModel implements IViewModel {
     //Implement actions callable by the view that will update both
     // the Model and the Observables
 
-    public void onNewGameSelected() {
+    public void onNewHumanGameSelected() {
         this.gameStarted.set(true);
-        this.model = new Game(new Human("Bill"), new Human("Ted"));
+        this.model = new Game(new Human("Black"), new Human("Red"));
+        //Set the observables with data from the model
+        initializeTurnObservable();
+        // Initialize the observable grid with the state of the Game's GameBoard
+        syncGridAndAvailableMovesObservables();
+        updateBlackCapturesObservable(model.getBlackCaptures());
+        updateRedCapturesObservable(model.getRedCaptures());
+    }
+
+    public void onNewBotGameSelected() {
+        this.gameStarted.set(true);
+        this.model = new Game(new Human("You"), new Bot());
         //Set the observables with data from the model
         initializeTurnObservable();
         // Initialize the observable grid with the state of the Game's GameBoard
@@ -76,36 +96,56 @@ public class CheckersViewModel implements IViewModel {
         updateBlackCapturesObservable(model.getBlackCaptures());
         updateRedCapturesObservable(model.getRedCaptures());
 
-        // TODO: If the black player is a bot, it should take its turn now
-        IPlayer currentPlayer = model.getBlackPlayer();
+        // If the black player is a bot, it should take its turn now
+    /*    IPlayer currentPlayer = model.getBlackPlayer();
         if (currentPlayer instanceof Bot) {
             model.advanceTurn(currentPlayer.chooseMove(model.getCurrentState()));
             syncGridAndAvailableMovesObservables();
             toggleTurnObservable();
             updateBlackCapturesObservable(model.getBlackCaptures());
-        }
+        }*/
     }
 
     public void onRestartGameSelected() {
-        this.gameStarted.set(true);
         if (this.model != null) {
+            this.gameStarted.set(true);
             // Reset the state of the model
             this.model.resetGame();
+            IPlayer red = this.model.getRedPlayer();
+            IPlayer black = this.model.getBlackPlayer();
+            if (red instanceof Human)
+                ((Human) red).setSelectedSquare(null);
+            if (black instanceof Human)
+                ((Human) black).setSelectedSquare(null);
+
             // Re-initialize the observables
             initializeTurnObservable();
             syncGridAndAvailableMovesObservables();
             updateBlackCapturesObservable(model.getBlackCaptures());
             updateRedCapturesObservable(model.getRedCaptures());
 
-            // TODO: If the black player is a bot, it should take its turn now
-            IPlayer currentPlayer = model.getBlackPlayer();
+            // If the black player is a bot, it should take its turn now
+        /*    IPlayer currentPlayer = model.getBlackPlayer();
             if (currentPlayer instanceof Bot) {
                 model.advanceTurn(currentPlayer.chooseMove(model.getCurrentState()));
                 syncGridAndAvailableMovesObservables();
                 toggleTurnObservable();
                 updateBlackCapturesObservable(model.getBlackCaptures());
-            }
+            }*/
         }
+    }
+
+    public void onDoneSelected() {
+        this.model = null;
+        this.blackCaptures.set(0);
+        this.redCaptures.set(0);
+        this.winner.set(null);
+        this.blacksTurn.set(false);
+        this.redsTurn.set(false);
+        this.grid.clear();
+        this.availableMoves.clear();
+        this.kingTracker.clear();
+        this.gameStarted.set(false);
     }
 
     /**
@@ -143,14 +183,7 @@ public class CheckersViewModel implements IViewModel {
                             clickedPosition
                     );
                     //Clear the availableMoves Observable
-                    clearAvailableMovesObservable();
                     //Update the observable with the new piece positions
-
-              /*      boolean resultOfGridObservableUpdate = updateGridObservable(
-                            selectedSquare.getPosition(),
-                            clickedPosition,
-                            currentColor);*/
-
                     syncGridAndAvailableMovesObservables();
                     //Clear the human's selectedSquare in model (maybe do AFTER updateGridObservable())
                     currentHuman.setSelectedSquare(null);
@@ -167,19 +200,29 @@ public class CheckersViewModel implements IViewModel {
                     else
                         updateRedCapturesObservable(model.getRedCaptures());
 
-                    //TODO: If other player is a bot it should take its turn now
-                    PieceColor nextColor = model.getCurrentState().getCurrentColor();
-                    IPlayer nextPlayer = nextColor == PieceColor.BLACK ?
-                            model.getBlackPlayer() : model.getRedPlayer();
-                    if (nextPlayer instanceof Bot) {
-                        GameState chosenMove = nextPlayer.chooseMove(model.getCurrentState());
-                        model.advanceTurn(chosenMove);
-                        syncGridAndAvailableMovesObservables();
-                        toggleTurnObservable();
-                        if (nextColor == PieceColor.BLACK)
-                            updateBlackCapturesObservable(model.getBlackCaptures());
-                        else
-                            updateRedCapturesObservable(model.getRedCaptures());
+                    // If there was a winner... GAME OVER
+                    if (model.getWinner() != null) {
+                        createGameOverAlert(activity);
+                    } else {
+                        // If other player is a bot it should take its turn now
+                        PieceColor nextColor = model.getCurrentState().getCurrentColor();
+                        IPlayer nextPlayer = nextColor == PieceColor.BLACK ?
+                                model.getBlackPlayer() : model.getRedPlayer();
+                        if (nextPlayer instanceof Bot) {
+                            GameState chosenMove = nextPlayer.chooseMove(model.getCurrentState());
+                            model.advanceTurn(chosenMove);
+                            syncGridAndAvailableMovesObservables();
+                            toggleTurnObservable();
+                            if (nextColor == PieceColor.BLACK)
+                                updateBlackCapturesObservable(model.getBlackCaptures());
+                            else
+                                updateRedCapturesObservable(model.getRedCaptures());
+                            winner.set(model.getWinner());
+                            // If there was a winner... GAME OVER
+                            if (model.getWinner() != null) {
+                                createGameOverAlert(activity);
+                            }
+                        }
                     }
                 } else if (selectedSquare.getPosition().equals(clickedPosition)) {
                     // If the player clicks on their selected piece, the piece is unselected and
@@ -259,23 +302,6 @@ public class CheckersViewModel implements IViewModel {
         }
     }
 
-    /*private boolean updateGridObservable(
-            Position pieceMovedFrom, Position pieceMovedTo, PieceColor color) {
-
-        boolean updateSucceeded = false;
-
-        // The color of the moved piece
-        int intColor = (color == PieceColor.BLACK ? 1 : 2);
-        String fromKey = pieceMovedFrom.toString();
-        String toKey = pieceMovedTo.toString();
-
-        // If both updates succeed, return true
-        if((grid.replace(fromKey, intColor, 0)) && (grid.replace(toKey, 0, intColor)))
-            updateSucceeded = true;
-
-        return  updateSucceeded;
-    }*/
-
     private void clearAvailableMovesObservable() {
         for (int i = 0; i < model.getCurrentState().getBoard().getGrid().length; i++) {
             for (int j = 0; j < model.getCurrentState().getBoard().getGrid()[i].length; j++) {
@@ -294,4 +320,35 @@ public class CheckersViewModel implements IViewModel {
         availableMoves.replace("" + selectedSquare.getPosition().toString(), true);
     }
 
+
+    // Method for creating the Game Over Dialog
+    public void createGameOverAlert(final AppCompatActivity activity) {
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+        // 2. Chain together various setter methods to set the dialog characteristics
+/*        builder.setMessage("" + model.getWinner().toString() + " wins!")
+                .setTitle("Game Over");*/
+        builder.setMessage("" + model.getWinner().toString() + " won!")
+                .setTitle("Game Over");
+        // Add the buttons
+        builder.setNegativeButton("Play Again", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                onRestartGameSelected();
+                Toast toast = Toast.makeText(activity, "Restarting Game...", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+        builder.setPositiveButton("Clear Board", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                onDoneSelected();
+                Toast toast = Toast.makeText(activity, "Board Cleared", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+
+        // 3. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 }

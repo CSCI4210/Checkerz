@@ -9,7 +9,7 @@ public class Bot implements IPlayer {
     private String name;
 
     public Bot() {
-        this.name = "Checkers Bot";
+        this.name = "Checkerz Bot";
     }
 
     @Override
@@ -133,6 +133,10 @@ public class Bot implements IPlayer {
         return score;
     }
 
+    @Override
+    public String toString() {
+        return this.name.toUpperCase();
+    }
 
     private class StateTree implements Comparable<StateTree> {
         final GameState state;
