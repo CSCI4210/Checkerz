@@ -140,17 +140,15 @@ public class GameBoard{
     public void removePiece(Piece x){
 
         if (x.color == PieceColor.RED) {
-            redPieces.remove(x);
-//            String s = Integer.toString(redPieces.size());
-//            Log.d("ready", s);
+//            redPieces.remove(x);
         }
         else {
-            blackPieces.remove(x);
+//            blackPieces.remove(x);
         }
         for(int i = 0; i<8;i++){
             for (int j=0; j < 8; j++){
 
-                if (grid[i][j].getPiece() == x) grid[i][j] = new Square( new Position(i,j), null );
+//                if (grid[i][j].getPiece() == x) grid[i][j] = new Square( new Position(i,j), null );
             }
         }
     }
@@ -168,7 +166,7 @@ public class GameBoard{
     public HashSet<Position> getAvailableMoves (Position positionOfPiece) {
         int cRow = positionOfPiece.row;
         int cCol = positionOfPiece.column;
-        Piece pieceToMove = grid[cRow][cCol].getPiece();
+        Piece pieceToMove = new Piece(PieceColor.BLACK);
 
         HashSet<Position> neighbors = new HashSet<Position>();
 
