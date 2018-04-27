@@ -221,7 +221,7 @@ public class GameState {
      */
     public boolean currentColorCanMove(){
         Iterator<Piece> pieceIterator = this.currentColor == PieceColor.BLACK ?
-                this.board.getBlackPieces().iterator() : this.board.getRedPieces().iterator();
+                this.getBoard().getBlackPieces().iterator() : this.getBoard().getRedPieces().iterator();
         boolean foundAvailableMove = false;
         while (!foundAvailableMove && pieceIterator.hasNext()){
             Piece piece = pieceIterator.next();
@@ -268,6 +268,10 @@ public class GameState {
             ancestor = ancestor.getPrevious();
         }
         return ancestor.childStates >= ancestor.SEARCH_LIMIT;
+    }
+
+    public int getChildStates() {
+        return this.childStates;
     }
 
 }
