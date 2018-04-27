@@ -7,5 +7,9 @@
     <color name="textColorHighlight">#f9a825</color>
     <color name="transparent">#00000000</color>
     <color name="buttonHighlight">#85f9a825</color>
+    <color name="buttonBack">#e5c100</color>
+    <color name="dimGray">#696969</color>
+    <color name="brown">#2c0a0a</color>
+    <color name="colText">#333333</color>
     <drawable name="clear">#00000000</drawable>
 </resources>
