@@ -1,18 +1,690 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<!-- In order to use Data Binding, the root layout structure must be wrapped in "layout" tags -->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.bikesh.checkerz.MainActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <!-- This layout is bound to the View (MainActivity). In order to interact with methods
+         of the View Model, a variable must be declared within the "data" tags first -->
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.bikesh.checkerz.viewmodel.CheckersViewModel"/>
+    </data>
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.example.bikesh.checkerz.view.MainActivity"
+        android:foreground="@{viewModel.gameStarted ? @drawable/clear: @drawable/overlay}"
+       >
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:rowCount="2">
+
+            <TextView
+                android:id="@+id/text_view_p1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Black:   "
+                android:textColor="@{viewModel.blacksTurn ? @color/textColorHighlight : @color/textColorPrimary}"
+                android:textSize="15sp"
+                android:layout_row="0"
+                android:layout_column="0"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Red:   "
+                android:textColor="@{viewModel.redsTurn ? @color/textColorHighlight : @color/textColorPrimary}"
+                android:textSize="15sp"
+                android:id="@+id/text_view_p2"
+                android:layout_row="1"
+                android:layout_column="0"/>
+            <TextView
+                android:id="@+id/tv_black_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{String.valueOf(viewModel.blackCaptures)}"
+                android:textSize="15sp"
+                android:layout_row="0"
+                android:layout_column="1"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{String.valueOf(viewModel.redCaptures)}"
+                android:textSize="15sp"
+                android:id="@+id/tv_white_score"
+                android:layout_row="1"
+                android:layout_column="1"/>
+        </GridLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <ImageButton
+                android:id="@+id/button_00"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_01"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["01"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["01"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(0,1)}"
+                android:background='@{safeUnbox(viewModel.grid["01"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["01"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_02"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_03"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["03"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["03"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(0,3)}"
+                android:background='@{safeUnbox(viewModel.grid["03"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["03"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_04"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"
+                />
+            <ImageButton
+                android:id="@+id/button_05"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["05"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["05"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(0,5)}"
+                android:background='@{safeUnbox(viewModel.grid["05"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["05"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_06"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_07"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["07"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["07"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(0,7)}"
+                android:background='@{safeUnbox(viewModel.grid["07"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["07"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <ImageButton
+                android:id="@+id/button_10"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["10"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["10"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(1,0)}"
+                android:background='@{safeUnbox(viewModel.grid["10"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["10"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_11"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_12"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["12"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["12"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(1,2)}"
+                android:background='@{safeUnbox(viewModel.grid["12"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["12"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_13"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_14"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["14"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["14"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(1,4)}"
+                android:background='@{safeUnbox(viewModel.grid["14"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["14"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_15"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_16"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["16"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["16"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(1,6)}"
+                android:background='@{safeUnbox(viewModel.grid["16"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["16"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_17"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <ImageButton
+                android:id="@+id/button_20"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_21"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["21"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["21"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(2,1)}"
+                android:background='@{safeUnbox(viewModel.grid["21"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["21"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_22"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_23"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["23"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["23"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(2,3)}"
+                android:background='@{safeUnbox(viewModel.grid["23"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["23"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_24"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_25"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["25"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["25"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(2,5)}"
+                android:background='@{safeUnbox(viewModel.grid["25"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["25"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_26"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_27"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["27"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["27"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(2,7)}"
+                android:background='@{safeUnbox(viewModel.grid["27"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["27"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <ImageButton
+                android:id="@+id/button_30"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["30"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["30"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(3,0)}"
+                android:background='@{safeUnbox(viewModel.grid["30"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["30"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_31"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_32"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["32"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["32"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(3,2)}"
+                android:background='@{safeUnbox(viewModel.grid["32"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["32"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_33"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_34"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["34"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["34"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(3,4)}"
+                android:background='@{safeUnbox(viewModel.grid["34"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["34"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_35"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_36"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["36"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["36"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(3,6)}"
+                android:background='@{safeUnbox(viewModel.grid["36"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["36"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_37"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <ImageButton
+                android:id="@+id/button_40"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_41"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["41"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["41"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(4,1)}"
+                android:background='@{safeUnbox(viewModel.grid["41"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["41"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_42"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_43"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["43"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["43"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(4,3)}"
+                android:background='@{safeUnbox(viewModel.grid["43"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["43"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_44"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_45"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["45"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["45"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(4,5)}"
+                android:background='@{safeUnbox(viewModel.grid["45"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["45"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_46"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_47"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["47"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["47"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(4,7)}"
+                android:background='@{safeUnbox(viewModel.grid["47"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["47"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <ImageButton
+                android:id="@+id/button_50"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["50"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["50"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(5,0)}"
+                android:background='@{safeUnbox(viewModel.grid["50"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["50"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_51"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_52"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["52"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["52"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(5,2)}"
+                android:background='@{safeUnbox(viewModel.grid["52"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["52"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_53"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_54"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["54"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["54"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(5,4)}"
+                android:background='@{safeUnbox(viewModel.grid["54"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["54"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_55"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_56"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["56"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["56"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(5,6)}"
+                android:background='@{safeUnbox(viewModel.grid["56"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["56"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_57"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <ImageButton
+                android:id="@+id/button_60"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_61"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["61"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["61"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(6,1)}"
+                android:background='@{safeUnbox(viewModel.grid["61"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["61"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_62"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_63"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["63"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["63"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(6,3)}"
+                android:background='@{safeUnbox(viewModel.grid["63"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["63"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_64"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_65"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["65"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["65"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(6,5)}"
+                android:background='@{safeUnbox(viewModel.grid["65"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["65"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_66"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_67"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["67"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["67"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(6,7)}"
+                android:background='@{safeUnbox(viewModel.grid["67"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["67"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <ImageButton
+                android:id="@+id/button_70"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["70"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["70"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(7,0)}"
+                android:background='@{safeUnbox(viewModel.grid["70"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["70"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_71"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_72"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["72"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["72"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(7,2)}"
+                android:background='@{safeUnbox(viewModel.grid["72"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["72"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_73"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_74"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["74"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["74"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(7,4)}"
+                android:background='@{safeUnbox(viewModel.grid["74"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["74"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_75"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_76"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:foreground='@{safeUnbox(viewModel.kingTracker["76"]) ? @drawable/kings_crown : @drawable/clear}'
+                android:backgroundTint='@{safeUnbox(viewModel.availableMoves["76"]) ? @color/buttonHighlight : @color/transparent}'
+                android:backgroundTintMode="src_over"
+                android:onClick="@{() -> viewModel.onCellClickedAt(7,6)}"
+                android:background='@{safeUnbox(viewModel.grid["76"]) == 0 ? @drawable/board2 : (safeUnbox(viewModel.grid["76"]) == 1 ? @drawable/board2wb : @drawable/board2wr)}'
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/button_77"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="30sp"
+                android:background="@drawable/board1"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</layout>

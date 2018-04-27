@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/item_new_human_game"
+        android:enabled="true"
+        android:title="Play Against a Friend"
+        android:visible="true" />
+    <item
+        android:id="@+id/item_new_bot_game"
+        android:enabled="true"
+        android:title="Play Against the Bot"
+        android:visible="true" />
+    <item
+        android:id="@+id/item_restart_game"
+        android:enabled="true"
+        android:title="Restart Game"
+        android:visible="true" />
+    <item
+        android:id="@+id/item_about"
+        android:enabled="true"
+        android:title="Quit"
+        android:visible="true" />
+</menu>
