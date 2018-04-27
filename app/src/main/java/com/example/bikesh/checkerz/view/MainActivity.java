@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (item.getItemId() == R.id.item_about){
             // Have Instructions Shown
+            System.exit(0);
             return true;
         } else
             return super.onOptionsItemSelected(item);
